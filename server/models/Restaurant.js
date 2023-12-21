@@ -1,31 +1,26 @@
-import { Sequelize, DataTypes } from 'sequelize';
 import { DataTypes } from 'sequelize';
+import Database from '../database.js';
 
-const Restaurant = sequelize.define(
- 'Restaurant',
- {
-  RestaurantID: {
-   type: DataTypes.INTEGER,
-   primaryKey: true,
-   autoIncrement: true,
-  },
-  Name: {
-   type: DataTypes.STRING,
-   allowNull: false,
-  },
-  Location: {
-   type: DataTypes.TEXT,
-   allowNull: false,
-  },
-  Contact: {
-   type: DataTypes.STRING,
-   allowNull: false,
-  },
+const field = {
+ RestaurantID: {
+  type: DataTypes.INTEGER,
+  primaryKey: true,
+  autoIncrement: true,
  },
- {
-  timestamps: false,
-  tableName: 'Restaurant',
- }
-);
+ Name: {
+  type: DataTypes.STRING,
+  allowNull: false,
+ },
+ Location: {
+  type: DataTypes.TEXT,
+  allowNull: false,
+ },
+ Contact: {
+  type: DataTypes.STRING,
+  allowNull: false,
+ },
+};
+
+const Restaurant = Database.session.define('Restaurant', field);
 
 export default Restaurant;
