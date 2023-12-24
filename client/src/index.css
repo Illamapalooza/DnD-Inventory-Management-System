@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+ html,
+ body {
+  @apply bg-bone2 font-serif; /* Example using Tailwind's blue-500 color */
+ }
+}
