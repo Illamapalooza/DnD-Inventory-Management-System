@@ -17,7 +17,7 @@ export default {
      800: '#c9ab94',
      900: '#e4d5c9',
     },
-    'blue_(munsell)': {
+    munsell: {
      DEFAULT: '#408da3',
      100: '#0d1d21',
      200: '#1a3942',
