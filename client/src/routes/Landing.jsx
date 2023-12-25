@@ -5,7 +5,6 @@ import Hero from '../components/Hero.jsx';
 const Home = () => {
  return (
   <div className="bg-bone2">
-   {/* <Banner /> */}
    <Hero />
    <Navbar />
   </div>
