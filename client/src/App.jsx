@@ -1,13 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './routes/Home.jsx';
+import Landing from './routes/Landing.jsx';
 
 const App = () => {
  return (
   <div className="App">
    <Router>
     <Routes>
-     <Route path="/" exact element={Home()} />
+     <Route path="/" exact element={Landing()} />
     </Routes>
    </Router>
   </div>
