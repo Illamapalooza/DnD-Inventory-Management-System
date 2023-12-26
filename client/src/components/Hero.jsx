@@ -1,18 +1,15 @@
 import { useState } from 'react';
-import { Dialog } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import cafe from '../assets/cafe.png';
 
 export default function Example() {
  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
  return (
-  <div className="bg-fixed bg-cover bg-[url('https://images.unsplash.com/photo-1497515114629-f71d768fd07c?q=80&w=884&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] ">
+  <div className="bg-fixed bg-cover h-screen bg-[url('https://images.unsplash.com/photo-1497515114629-f71d768fd07c?q=80&w=884&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] ">
    <div className="relative isolate px-6 pt-14 lg:px-8">
-    <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+    <div className="mx-auto max-w-4xl py-32 sm:py-48 lg:py-56">
      <div className="hidden sm:mb-8 sm:flex sm:justify-center">
       <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-linen-600 ring-2 ring-linen hover:ring-bone1">
-       Booking here here.{' '}
+       Book a reservation now.{' '}
        <a href="#" className="font-medium text-munsell">
         <span className="absolute inset-0" aria-hidden="true" />
         Book Now <span aria-hidden="true">&rarr;</span>
