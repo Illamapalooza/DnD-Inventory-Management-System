@@ -1,12 +1,13 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import logo from '../assets/logo.png';
 
 const navigation = [
- { name: 'Home', href: '#', current: true },
- { name: 'Menu', href: '#', current: false },
- { name: 'Booking', href: '#', current: false },
- { name: 'Contact', href: '#', current: false },
+ { id: 'home', name: 'Home', href: '#', current: false },
+ { id: 'menu', name: 'Menu', href: '#menu', current: false },
+ { id: 'booking', name: 'Booking', href: '#', current: false },
+ { id: 'contact', name: 'Contact', href: '#', current: false },
 ];
 
 function classNames(...classes) {
@@ -15,22 +16,45 @@ function classNames(...classes) {
 
 export default function NavBar() {
  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+ const [hasScrolled, setHasScrolled] = useState(false);
+ const [current, setCurrent] = useState('home');
+
+ useEffect(() => {
+  const handleScroll = () => {
+   const viewportHeight = window.innerHeight;
+   const scrollPosition = window.scrollY;
+
+   if (scrollPosition >= viewportHeight - 100) {
+    setHasScrolled(true);
+   } else {
+    setHasScrolled(false);
+   }
+  };
+
+  window.addEventListener('scroll', handleScroll);
+
+  return () => {
+   window.removeEventListener('scroll', handleScroll);
+  };
+ }, []);
 
  return (
-  <header className="bg-transparent top-0 fixed w-full">
+  <header
+   className={
+    hasScrolled
+     ? 'bg-bistre-200 top-0 fixed w-full bg-opacity-80'
+     : 'bg-transparent top-0 fixed w-full'
+   }
+  >
    <nav
-    className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8 md:px-6"
+    className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8 md:px-6"
     aria-label="Global"
    >
     <div className="sm:hidden"></div>
     <div className="flex sm:flex-1">
      <a href="#" className="-m-1.5 p-1.5">
       <span className="sr-only">Your Company</span>
-      <img
-       className="h-10 w-auto"
-       src="https://seeklogo.com/images/S/starbucks-coffee-logo-0639383401-seeklogo.com.png"
-       alt="Codex Coffee"
-      />
+      <img className="h-10 w-auto" src={logo} alt="Codex Coffee" />
      </a>
     </div>
     <div className="flex sm:hidden">
@@ -49,10 +73,11 @@ export default function NavBar() {
        key={item.name}
        href={item.href}
        className={classNames(
-        item.current
+        current === item.id
          ? 'text-large font-medium leading-6 text-linen overline overline-offset-[0.4rem] decoration-2'
          : 'text-large font-medium leading-6 text-linen hover:overline overline-offset-[0.4rem] decoration-2'
        )}
+       onClick={() => setCurrent(item.id)}
        aria-current={item.current ? 'page' : undefined}
       >
        {item.name}
@@ -79,11 +104,7 @@ export default function NavBar() {
       <div></div>
       <a href="#" className="-m-1.5 p-1.5 place-self-center">
        <span className="sr-only">Your Company</span>
-       <img
-        className="h-10 w-auto "
-        src="https://seeklogo.com/images/S/starbucks-coffee-logo-0639383401-seeklogo.com.png"
-        alt=""
-       />
+       <img className="h-10 w-auto " src={logo} alt="" />
       </a>
       <button
        type="button"
