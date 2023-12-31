@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,7 +7,7 @@
 @layer base {
  html,
  body {
-  @apply bg-bone2 font-serif overflow-x-hidden scroll-smooth;
+  @apply bg-seasalt font-serif overflow-x-hidden scroll-smooth;
  }
 }
 
