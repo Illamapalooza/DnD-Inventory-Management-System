@@ -2,9 +2,13 @@ import React from 'react';
 import NavBar from '../components/NavBar';
 import Sidebar from '../components/Sidebar';
 import { useState } from 'react';
+import Validation from '../components/ProductValidation.jsx';
+import axios from 'axios';
 
 const AddProducts = () => {
  const [imagePreview, setImagePreview] = useState(null);
+
+ const [errors, setErrors] = useState({});
 
  const handleImageChange = (e) => {
   const file = e.target.files[0];
@@ -17,27 +21,44 @@ const AddProducts = () => {
 
  const [formData, setFormData] = useState({
   productName: '',
+  unitPrice: '',
   sku: '',
-  price: '',
   quantity: '',
   description: '',
   brand: '',
   supplier: '',
   category: '',
-  availabilityStatus: 'active', // 'active' or 'inactive'
  });
 
  const handleChange = (e) => {
-  const { name, value } = e.target;
   setFormData((prevFormData) => ({
    ...prevFormData,
-   [name]: value,
+   [e.target.name]: e.target.value,
   }));
  };
 
  const handleSubmit = (e) => {
   e.preventDefault();
-  onSubmit(formData);
+  setErrors(Validation(formData));
+  if (
+   errors.productName === '' &&
+   errors.unitPrice === '' &&
+   errors.sku === '' &&
+   errors.quantity === '' &&
+   errors.description === '' &&
+   errors.brand === '' &&
+   errors.supplier === '' &&
+   errors.category === ''
+  ) {
+   axios
+    .post('http://localhost:3000/products/add-products', formData)
+    .then((res) => {
+     console.log('it works');
+    })
+    .catch((err) => {
+     console.log(err);
+    });
+  }
  };
 
  return (
@@ -61,7 +82,7 @@ const AddProducts = () => {
          className="mb-4 h-auto rounded"
         />
        ) : (
-        <div className="mb-4 h-72 flex flex-col items-center justify-center bg-white rounded border border-grayish w-full">
+        <div className="mb-4 h-72 flex flex-col items-center justify-center bg-white rounded border border-grayish w-full w-full">
          <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -95,82 +116,160 @@ const AddProducts = () => {
       </div>
 
       {/* Input Information */}
-      <form className="bg-white p-8 rounded-lg flex-1" onSubmit={handleSubmit}>
-       <div className="grid grid-cols-1 gap-6">
-        <input
-         className="bg-white text-foreground rounded-lg p-2 border border-grayish"
-         name="productName"
-         placeholder="Product Name"
-         value={formData.productName}
-         onChange={handleChange}
-        />
 
-        <input
-         className="bg-white text-foreground rounded-lg p-2 border border-grayish"
-         name="price"
-         placeholder="Price"
-         type="number"
-         value={formData.price}
-         onChange={handleChange}
-        />
-
-        <div className="grid grid-cols-2 gap-4">
+      <form
+       className="bg-white p-8 rounded-lg flex-1"
+       action=""
+       onSubmit={handleSubmit}
+      >
+       <div className="grid grid-cols-1 gap-4">
+        {/* PRODUCT NAME */}
+        <div>
          <input
-          className="bg-white text-foreground rounded-lg p-2 border border-grayish"
-          name="sku"
-          placeholder="SKU"
-          type="text"
-          value={formData.sku}
+          className="bg-white text-foreground rounded-lg p-2 border border-grayish w-full"
+          name="productName"
+          placeholder="Product Name"
           onChange={handleChange}
          />
-         <input
-          className="bg-white text-foreground rounded-lg p-2 border border-grayish"
-          name="quantity"
-          placeholder="Quantity"
-          type="number"
-          value={formData.quantity}
-          onChange={handleChange}
-         />
+         {errors.productName && (
+          <span className="font-thin text-red-600 text-[12px] my-0 py-0">
+           {errors.productName}
+          </span>
+         )}
         </div>
 
-        <textarea
-         className="bg-white text-foreground rounded-lg p-2 border border-grayish"
-         name="description"
-         placeholder="Description"
-         value={formData.description}
-         onChange={handleChange}
-         style={{ resize: 'none' }}
-        />
-        <input
-         className="bg-white text-foreground rounded-lg p-2 border border-grayish"
-         name="brand"
-         placeholder="Brand"
-         value={formData.brand}
-         onChange={handleChange}
-        />
-        <input
-         className="bg-white text-foreground rounded-lg p-2 border border-grayish"
-         name="supplier"
-         placeholder="Supplier"
-         value={formData.supplier}
-         onChange={handleChange}
-        />
-        <input
-         className="bg-white text-foreground rounded-lg p-2 border border-grayish"
-         name="category"
-         placeholder="Category"
-         value={formData.category}
-         onChange={handleChange}
-        />
-        <select
-         className="bg-white text-foreground rounded-lg p-2 border border-grayish"
-         name="availabilityStatus"
-         value={formData.availabilityStatus}
-         onChange={handleChange}
-        >
-         <option value="active">Active</option>
-         <option value="inactive">Inactive</option>
-        </select>
+        {/* UNIT PRICE */}
+        <div>
+         <input
+          className="bg-white text-foreground rounded-lg p-2 border border-grayish w-full"
+          name="unitPrice"
+          placeholder="Unit Price"
+          type="number"
+          onChange={handleChange}
+         />
+         {errors.unitPrice && (
+          <span className="font-thin text-red-600 text-[12px] mb-0 py-0">
+           {errors.unitPrice}
+          </span>
+         )}
+        </div>
+
+        {/* SKU */}
+
+        <div className="grid grid-cols-2 gap-4">
+         <div>
+          <input
+           className="bg-white text-foreground rounded-lg p-2 border border-grayish w-full"
+           name="sku"
+           placeholder="SKU"
+           type="text"
+           onChange={handleChange}
+          />
+
+          {errors.sku && (
+           <span className="font-thin text-red-600 text-[12px] mb-0 py-0">
+            {errors.sku}
+           </span>
+          )}
+         </div>
+
+         {/* QUANTITY */}
+         <div>
+          <input
+           className="bg-white text-foreground rounded-lg p-2 border border-grayish w-full"
+           name="quantity"
+           placeholder="Quantity"
+           type="number"
+           onChange={handleChange}
+          />
+          {errors.quantity && (
+           <span className="font-thin text-red-600 text-[12px] mb-0 py-0">
+            {errors.quantity}
+           </span>
+          )}
+         </div>
+        </div>
+
+        {/* DESCRIPTION */}
+        <div>
+         <textarea
+          className="bg-white text-foreground rounded-lg p-2 border border-grayish w-full"
+          name="description"
+          placeholder="Description"
+          onChange={handleChange}
+          style={{ resize: 'none' }}
+         />
+         {errors.description && (
+          <span className="font-thin text-red-600 text-[12px] mb-0 py-0">
+           {errors.description}
+          </span>
+         )}
+        </div>
+
+        {/* BRAND */}
+
+        <div>
+         <input
+          className="bg-white text-foreground rounded-lg p-2 border border-grayish w-full"
+          name="brand"
+          placeholder="Brand"
+          onChange={handleChange}
+         />
+         {errors.brand && (
+          <span className="font-thin text-red-600 text-[12px] mb-0 py-0">
+           {errors.brand}
+          </span>
+         )}
+        </div>
+
+        {/* SUPPLIER */}
+        <div>
+         <input
+          className="bg-white text-foreground rounded-lg p-2 border border-grayish w-full"
+          name="supplier"
+          placeholder="Supplier"
+          onChange={handleChange}
+         />
+
+         {errors.supplier && (
+          <span className="font-thin text-red-600 text-[12px] mb-0 py-0">
+           {errors.supplier}
+          </span>
+         )}
+        </div>
+
+        {/* CATEGORY */}
+
+        <div>
+         <select
+          className="bg-white text-foreground rounded-lg p-2 border border-grayish w-full"
+          name="category"
+          placeholder="Category"
+          onChange={handleChange}
+         >
+          <option value="">Select Category</option>
+          <option value="Beverages">Beverages</option>
+          <option value="Bread/Bakery">Bread/Bakery</option>
+          <option value="Canned/Jarred Goods">Canned/Jarred Goods</option>
+          <option value="Dairy">Dairy</option>
+          <option value="Frozen Goods">Frozen Goods</option>
+          <option value="Meat">Meat</option>
+          <option value="Fruits">Fruits</option>
+          <option value="Vegetables">Vegetables</option>
+          <option value="Condiments">Condiments</option>
+          <option value="Snacks">Snacks</option>
+          <option value="Grains">Grains</option>
+          <option value="Poultry">Poultry</option>
+          <option value="Others">Others</option>
+         </select>
+
+         {errors.category && (
+          <span className="font-thin text-red-600 text-[12px] mb-0 py-0">
+           {errors.category}
+          </span>
+         )}
+        </div>
+
         <div className="flex justify-end space-x-2">
          <button
           type="submit"
