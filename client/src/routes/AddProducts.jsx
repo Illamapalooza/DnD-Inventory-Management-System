@@ -17,6 +17,7 @@ const AddProducts = () => {
 
  const [formData, setFormData] = useState({
   productName: '',
+  sku: '',
   price: '',
   quantity: '',
   description: '',
@@ -104,13 +105,22 @@ const AddProducts = () => {
          onChange={handleChange}
         />
 
+        <input
+         className="bg-white text-foreground rounded-lg p-2 border border-grayish"
+         name="price"
+         placeholder="Price"
+         type="number"
+         value={formData.price}
+         onChange={handleChange}
+        />
+
         <div className="grid grid-cols-2 gap-4">
          <input
           className="bg-white text-foreground rounded-lg p-2 border border-grayish"
-          name="price"
-          placeholder="Price"
-          type="number"
-          value={formData.price}
+          name="sku"
+          placeholder="SKU"
+          type="text"
+          value={formData.sku}
           onChange={handleChange}
          />
          <input
