@@ -4,7 +4,7 @@ import { Sequelize } from 'sequelize';
  * The user credentials to connect the database
  */
 const credentials = {
- database: 'foodservicedb',
+ database: 'dnd_inventory',
  username: 'root',
  password: 'root',
 };
