@@ -18,7 +18,7 @@ const App = () => {
      <Route path="/register" exact element={Registration()}></Route>
      <Route path="/dashboard" exact element={Dashboard()}></Route>
      <Route path="/products" exact element={Products()}></Route>
-     <Route path="/add-products" exact element={AddProducts()}></Route>
+     <Route path="/products/add-products" exact element={AddProducts()}></Route>
      <Route path="/orders" exact element={Orders()}></Route>
      <Route path="/add-orders" exact element={AddOrders()}></Route>
      <Route path="/suppliers" exact element={Suppliers()}></Route>
