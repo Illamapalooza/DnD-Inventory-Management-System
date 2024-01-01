@@ -1,44 +1,45 @@
 import Database from '../database.js';
 import Users from '../models/Users.js';
-import Restaurant from '../models/restaurant.js';
-import MenuItems from '../models/MenuItems.js';
 import Orders from '../models/Orders.js';
 import OrderDetails from '../models/OrderDetails.js';
-import Delivery from '../models/Delivery.js';
-import Payment from '../models/Payment.js';
-import RatingsReviews from '../models/RatingsReviews.js';
+import Deliveries from '../models/Deliveries.js';
+import Products from '../models/Products.js';
+import Suppliers from '../models/Suppliers.js';
+import SupplierProducts from '../models/SupplierProducts.js';
+import Inventory from '../models/Inventory.js';
+import Permissions from '../models/Permissions.js';
 
 // Run this Script to initialize and create the database with tables in mysql
 
 (async () => {
  try {
-  // User and Orders
-  Users.hasMany(Orders, { foreignKey: 'UserID' });
-  Orders.belongsTo(Users, { foreignKey: 'UserID' });
+  // Suppliers to Supplier_Products (One-to-Many)
+  Suppliers.hasMany(SupplierProducts, { foreignKey: 'SupplierID' });
+  SupplierProducts.belongsTo(Suppliers, { foreignKey: 'SupplierID' });
 
-  // Orders and OrderDetails
+  // Products to Supplier_Products (One-to-Many)
+  Products.hasMany(SupplierProducts, { foreignKey: 'ProductID' });
+  SupplierProducts.belongsTo(Products, { foreignKey: 'ProductID' });
+
+  // Products to Inventory (One-to-One)
+  Products.hasOne(Inventory, { foreignKey: 'ProductID' });
+  Inventory.belongsTo(Products, { foreignKey: 'ProductID' });
+
+  // Orders to Order_Details (One-to-Many)
   Orders.hasMany(OrderDetails, { foreignKey: 'OrderID' });
   OrderDetails.belongsTo(Orders, { foreignKey: 'OrderID' });
 
-  // MenuItems and OrderDetails
-  MenuItems.hasMany(OrderDetails, { foreignKey: 'ItemID' });
-  OrderDetails.belongsTo(MenuItems, { foreignKey: 'ItemID' });
+  // Products to Order_Details (One-to-Many)
+  Products.hasMany(OrderDetails, { foreignKey: 'ProductID' });
+  OrderDetails.belongsTo(Products, { foreignKey: 'ProductID' });
 
-  // Orders and Delivery
-  Orders.hasOne(Delivery, { foreignKey: 'OrderID' });
-  Delivery.belongsTo(Orders, { foreignKey: 'OrderID' });
+  // Orders to Deliveries (One-to-One)
+  Orders.hasOne(Deliveries, { foreignKey: 'OrderID' });
+  Deliveries.belongsTo(Orders, { foreignKey: 'OrderID' });
 
-  // Orders and Payment
-  Orders.hasOne(Payment, { foreignKey: 'OrderID' });
-  Payment.belongsTo(Orders, { foreignKey: 'OrderID' });
-
-  // Users and RatingsReviews
-  Users.hasMany(RatingsReviews, { foreignKey: 'UserID' });
-  RatingsReviews.belongsTo(Users, { foreignKey: 'UserID' });
-
-  // Orders and RatingsReviews
-  Orders.hasMany(RatingsReviews, { foreignKey: 'OrderID' });
-  RatingsReviews.belongsTo(Orders, { foreignKey: 'OrderID' });
+  // Users to Permissions (One-to-Many)
+  Users.hasMany(Permissions, { foreignKey: 'UserID' });
+  Permissions.belongsTo(Users, { foreignKey: 'UserID' });
  } catch (error) {
   console.log(`${error.name}: ${error.message}`);
   process.exit(1);
