@@ -7,19 +7,19 @@ const fields = {
   primaryKey: true,
   autoIncrement: true,
  },
- UserID: {
+ SupplierID: {
   type: DataTypes.INTEGER,
   allowNull: false,
+  references: {
+   model: 'Suppliers',
+   key: 'SupplierID',
+  },
  },
- OrderDate: {
-  type: DataTypes.DATE,
-  defaultValue: DataTypes.NOW,
- },
- TotalAmount: {
-  type: DataTypes.DECIMAL(10, 2),
-  allowNull: false,
- },
+ OrderDate: DataTypes.DATE,
+ ExpectedDeliveryDate: DataTypes.DATE,
  Status: DataTypes.STRING,
+ PaymentStatus: DataTypes.STRING,
+ InvoiceNumber: DataTypes.STRING,
 };
 
 const Orders = Database.session.define('Orders', fields);

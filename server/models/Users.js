@@ -21,6 +21,22 @@ const fields = {
   type: DataTypes.TEXT,
   allowNull: false,
  },
+ Password: {
+  type: DataTypes.STRING,
+  allowNull: false,
+ },
+ Role: {
+  type: DataTypes.STRING,
+  allowNull: false,
+ },
+ DateCreated: {
+  type: DataTypes.DATE,
+  defaultValue: DataTypes.NOW,
+ },
+ ProfilePhoto: {
+  type: DataTypes.STRING, // Storing the URL as a string
+  allowNull: true, // This can be optional
+ },
 };
 
 const Users = Database.session.define('Users', fields);

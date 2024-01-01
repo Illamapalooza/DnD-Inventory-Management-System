@@ -2,18 +2,10 @@ import { DataTypes } from 'sequelize';
 import Database from '../database.js';
 
 const fields = {
- OrderDetailID: {
+ InventoryID: {
   type: DataTypes.INTEGER,
   primaryKey: true,
   autoIncrement: true,
- },
- OrderID: {
-  type: DataTypes.INTEGER,
-  allowNull: false,
-  references: {
-   model: 'Orders',
-   key: 'OrderID',
-  },
  },
  ProductID: {
   type: DataTypes.INTEGER,
@@ -24,9 +16,10 @@ const fields = {
   },
  },
  Quantity: DataTypes.INTEGER,
- Price: DataTypes.DECIMAL,
+ ReorderLevel: DataTypes.INTEGER,
+ LastOrderDate: DataTypes.DATE,
 };
 
-const OrderDetails = Database.session.define('OrderDetails', fields);
+const Inventory = Database.session.define('Inventory', fields);
 
-export default OrderDetails;
+export default Inventory;

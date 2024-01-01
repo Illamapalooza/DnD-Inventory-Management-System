@@ -2,17 +2,12 @@ import { DataTypes } from 'sequelize';
 import Database from '../database.js';
 
 const fields = {
- OrderDetailID: {
-  type: DataTypes.INTEGER,
-  primaryKey: true,
-  autoIncrement: true,
- },
- OrderID: {
+ SupplierID: {
   type: DataTypes.INTEGER,
   allowNull: false,
   references: {
-   model: 'Orders',
-   key: 'OrderID',
+   model: 'Suppliers',
+   key: 'SupplierID',
   },
  },
  ProductID: {
@@ -23,10 +18,9 @@ const fields = {
    key: 'ProductID',
   },
  },
- Quantity: DataTypes.INTEGER,
- Price: DataTypes.DECIMAL,
+ LeadTime: DataTypes.INTEGER,
 };
 
-const OrderDetails = Database.session.define('OrderDetails', fields);
+const SupplierProducts = Database.session.define('SupplierProducts', fields);
 
-export default OrderDetails;
+export default SupplierProducts;
