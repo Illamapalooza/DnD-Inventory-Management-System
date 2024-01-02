@@ -3,8 +3,15 @@ import NavBar from '../components/NavBar';
 import Sidebar from '../components/Sidebar';
 import ProductList from '../components/ProductList';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 const Products = () => {
+ const [totalProducts, setTotalProducts] = useState(0);
+
+ const handleTotalProducts = (products) => {
+  setTotalProducts(products.length);
+ };
+
  return (
   <div>
    <NavBar />
@@ -13,7 +20,7 @@ const Products = () => {
     <div className="p-4 mt-10">
      <div className="flex flex-row w-full justify-between items-center">
       <h1 className="text-2xl font-bold text-gray-80 py-6">Products</h1>
-      <Link to="/add-products">
+      <Link to="/products/add-products">
        <button
         type="button"
         className="text-white bg-kelly-500 hover:bg-kelly-400 focus:ring-4 focus:outline-none focus:ring-kelly-700 font-medium rounded-lg text-md px-4 py-2.5 text-center inline-flex items-center justify-between"
@@ -45,7 +52,7 @@ const Products = () => {
          <p className="mb-2 text-sm font-medium text-gray-600">
           Total Products
          </p>
-         <p className="text-lg font-semibold text-gray-700">6389</p>
+         <p className="text-lg font-semibold text-gray-700">{totalProducts}</p>
         </div>
        </div>
       </div>
@@ -83,7 +90,7 @@ const Products = () => {
      </div>
     </div>
     <div>
-     <ProductList />
+     <ProductList onTotalProducts={handleTotalProducts} />
     </div>
    </div>
   </div>
