@@ -1,28 +1,49 @@
 import React from 'react';
 import Pagination from './Pagination.jsx';
 import SupplierPerson from './SupplierPerson.jsx';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const SupplierList = () => {
- const sampleSupplier = [
-  {
-   id: 1,
-   name: 'Jane Doe',
-   contactNo: 992932923,
-   address: 'Tuscania',
-   servicesProducts: ['Milk', 'Cheese', 'Butter'],
-   qualityRating: 4.5,
-   deliveryRating: 5,
-  },
-  {
-   id: 2,
-   name: 'Jane Doe',
-   contactNo: 992932923,
-   address: 'Tuscania',
-   servicesProducts: ['Milk', 'Cheese', 'Butter'],
-   qualityRating: 5,
-   deliveryRating: 5,
-  },
- ];
+ const [suppliers, setSuppliers] = useState([]);
+
+ const [search, setSearch] = useState('');
+
+ useEffect(() => {
+  axios
+   .get('http://localhost:3000/suppliers')
+   .then((res) => {
+    setSuppliers(res.data);
+   })
+   .catch((error) => console.error('Error:', error));
+ }, []);
+
+ const handleInputChange = (e) => {
+  setSearch(e.target.value);
+ };
+
+ const handleSearch = () => {
+  axios
+   .get(`http://localhost:3000/suppliers/search?query=${search}`)
+   .then((response) => {
+    setSuppliers(response.data);
+   })
+   .catch((error) => console.error('Error:', error));
+ };
+
+ const handleDelete = (id) => {
+  axios
+   .delete(`http://localhost:3000/suppliers`, { data: { id: id } })
+   .then((response) => {
+    console.log(response);
+    const updatedSuppliers = setSuppliers(
+     suppliers.filter((product) => product.productID !== id)
+    );
+    setSuppliers(updatedSuppliers);
+    window.location.reload();
+   })
+   .catch((error) => console.error('Error:', error));
+ };
 
  return (
   <div>
@@ -35,14 +56,19 @@ const SupplierList = () => {
      </div>
      <div className="flex space-x-4 items-center">
       <div className="flex pt-2 relative mx-auto text-gray-600 items-center">
+       {/* Search Bar */}
        <input
         className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none items-center"
         type="search"
         name="search"
         placeholder="Search"
         decoration="none"
+        onChange={handleInputChange}
        />
-       <button type="submit" className="absolute right-0 top-0 mt-5 mr-4">
+       <button
+        className="absolute right-0 top-0 mt-5 mr-4"
+        onClick={handleSearch}
+       >
         <svg
          xmlns="http://www.w3.org/2000/svg"
          fill="none"
@@ -81,7 +107,7 @@ const SupplierList = () => {
     </div>
    </div>
 
-   {/* Product Items */}
+   {/* Supplier List */}
 
    <div className="mt-4 px-4">
     <div className="min-h-screen bg-white rounded-lg p-6 shadow-md">
@@ -91,17 +117,20 @@ const SupplierList = () => {
         <tr className="text-left text-foreground-40 border-b border-b-grayish-700">
          <th className="p-4">#</th>
          <th className="p-4">Supplier Name</th>
-         <th className="p-4">Contact Number</th>
+         <th className="p-4">Phone</th>
          <th className="p-4">Address</th>
          <th className="p-4">Services/Products</th>
          <th className="p-4">Quality Rating</th>
-         <th className="p-4">Delivery Rating</th>
          <th className="p-4">Action</th>
         </tr>
        </thead>
        <tbody>
-        {sampleSupplier.map((supplier) => (
-         <SupplierPerson key={supplier.id} supplier={supplier} />
+        {suppliers.map((supplier) => (
+         <SupplierPerson
+          key={supplier.id}
+          supplier={supplier}
+          handleDelete={handleDelete}
+         />
         ))}
        </tbody>
       </table>
