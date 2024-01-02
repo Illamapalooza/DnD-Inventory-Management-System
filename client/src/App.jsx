@@ -8,6 +8,7 @@ import AddProducts from './routes/AddProducts.jsx';
 import Orders from './routes/Orders.jsx';
 import AddOrders from './routes/AddOrders.jsx';
 import Suppliers from './routes/Suppliers.jsx';
+import EditProduct from './routes/EditProduct.jsx';
 
 const App = () => {
  return (
@@ -22,6 +23,7 @@ const App = () => {
      <Route path="/orders" exact element={Orders()}></Route>
      <Route path="/add-orders" exact element={AddOrders()}></Route>
      <Route path="/suppliers" exact element={Suppliers()}></Route>
+     <Route path="/products/edit-product/:id" element={EditProduct()}></Route>
     </Routes>
    </Router>
   </div>
