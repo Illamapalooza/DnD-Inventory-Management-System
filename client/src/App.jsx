@@ -9,6 +9,8 @@ import Orders from './routes/Orders.jsx';
 import AddOrders from './routes/AddOrders.jsx';
 import Suppliers from './routes/Suppliers.jsx';
 import EditProduct from './routes/EditProduct.jsx';
+import AddSupplier from './routes/AddSupplier.jsx';
+import EditSupplier from './routes/EditSupplier.jsx';
 
 const App = () => {
  return (
@@ -21,9 +23,18 @@ const App = () => {
      <Route path="/products" exact element={Products()}></Route>
      <Route path="/products/add-products" exact element={AddProducts()}></Route>
      <Route path="/orders" exact element={Orders()}></Route>
-     <Route path="/add-orders" exact element={AddOrders()}></Route>
+     <Route path="/orders/add-orders" exact element={AddOrders()}></Route>
      <Route path="/suppliers" exact element={Suppliers()}></Route>
      <Route path="/products/edit-product/:id" element={EditProduct()}></Route>
+     <Route
+      path="/suppliers/add-suppliers"
+      exact
+      element={AddSupplier()}
+     ></Route>
+     <Route
+      path="/suppliers/edit-supplier/:id"
+      element={EditSupplier()}
+     ></Route>
     </Routes>
    </Router>
   </div>
