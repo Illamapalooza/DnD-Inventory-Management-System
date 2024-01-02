@@ -11,9 +11,9 @@ const fields = {
   type: DataTypes.STRING,
   allowNull: false,
  },
- ContactInfo: DataTypes.STRING,
+ Phone: DataTypes.STRING,
  Address: DataTypes.TEXT,
- Rating: DataTypes.DECIMAL,
+ Rating: DataTypes.DECIMAL(10, 1),
 };
 
 const Suppliers = Database.session.define('Suppliers', fields);
