@@ -1,33 +1,55 @@
 import React from 'react';
 import ProductItem from './ProductItem.jsx';
 import Pagination from './Pagination.jsx';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const ProductList = () => {
- const sampleProduct = [
-  // Sample food items
-  {
-   id: 1,
-   name: 'Fresh Avocados',
-   description: 'Ripe - Organic',
-   price: '2.99',
-   quantity: '156',
-   category: 'Whole Foods',
-   imageUrl:
-    'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?q=80&w=1975&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-   isActive: true,
-  },
-  {
-   id: 2,
-   name: 'Almond Milk',
-   description: 'Unsweetened - 1L',
-   price: '3.50',
-   quantity: '200',
-   category: "Trader Joe's",
-   imageUrl:
-    'https://images.unsplash.com/photo-1600788907416-456578634209?q=80&w=1950&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-   isActive: false,
-  },
- ];
+const ProductList = ({ onTotalProducts }) => {
+ const [products, setProducts] = useState([]);
+
+ const [search, setSearch] = useState('');
+
+ const sendTotalProduct = () => {
+  onTotalProducts(products);
+ };
+
+ useEffect(() => {
+  axios
+   .get('http://localhost:3000/products')
+   .then((res) => {
+    setProducts(res.data);
+   })
+   .catch((error) => console.error('Error:', error));
+ }, []);
+
+ const handleInputChange = (e) => {
+  setSearch(e.target.value);
+ };
+
+ const handleDelete = (id) => {
+  axios
+   .delete(`http://localhost:3000/products`, { data: { id: id } })
+   .then((response) => {
+    console.log(response);
+    const updatedProducts = setProducts(
+     products.filter((product) => product.productID !== id)
+    );
+    setProducts(updatedProducts);
+    window.location.reload();
+   })
+   .catch((error) => console.error('Error:', error));
+ };
+
+ const handleSearch = () => {
+  axios
+   .get(`http://localhost:3000/products/search?query=${search}`)
+   .then((response) => {
+    setProducts(response.data);
+   })
+   .catch((error) => console.error('Error:', error));
+ };
+
+ sendTotalProduct();
 
  return (
   <div>
@@ -52,11 +74,16 @@ const ProductList = () => {
        <input
         className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none items-center"
         type="search"
+        value={search}
+        onChange={handleInputChange}
         name="search"
         placeholder="Search"
         decoration="none"
        />
-       <button type="submit" className="absolute right-0 top-0 mt-5 mr-4">
+       <button
+        onClick={handleSearch}
+        className="absolute right-0 top-0 mt-5 mr-4"
+       >
         <svg
          xmlns="http://www.w3.org/2000/svg"
          fill="none"
@@ -105,16 +132,19 @@ const ProductList = () => {
         <tr className="text-left text-foreground-40 border-b border-b-grayish-700">
          <th className="p-4">#</th>
          <th className="p-4">Product</th>
-         <th className="p-4">Price</th>
+         <th className="p-4">Unit Price</th>
          <th className="p-4">Qty</th>
          <th className="p-4">Category</th>
-         <th className="p-4">Availability</th>
          <th className="p-4">Action</th>
         </tr>
        </thead>
        <tbody>
-        {sampleProduct.map((product) => (
-         <ProductItem key={product.id} product={product} />
+        {products.map((product) => (
+         <ProductItem
+          key={product.productID}
+          product={product}
+          handleDelete={handleDelete}
+         />
         ))}
        </tbody>
       </table>
@@ -122,8 +152,8 @@ const ProductList = () => {
     </div>
     <div className="w-full flex justify-end ">
      <Pagination
-      totalItems={100}
-      itemsPerPage={20}
+      totalItems={products.length}
+      itemsPerPage={10}
       currentPage={1}
       onPageChange={3}
      />
