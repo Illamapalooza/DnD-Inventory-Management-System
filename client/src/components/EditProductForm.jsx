@@ -69,7 +69,6 @@ const EditProductForm = () => {
    axios
     .post(`http://localhost:3000/products/edit-product/${id}`, formData)
     .then((res) => {
-     console.log('it works');
      if (res.status === 200) {
       alert('Product Updated Successfully');
       setFormData({
