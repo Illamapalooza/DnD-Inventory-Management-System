@@ -25,7 +25,7 @@ const fields = {
   'Snacks',
   'Grains'
  ),
- UnitPrice: DataTypes.DECIMAL,
+ UnitPrice: DataTypes.DECIMAL(10, 2),
  Photo: DataTypes.BLOB,
  SKU: DataTypes.STRING,
  Brand: DataTypes.STRING,
