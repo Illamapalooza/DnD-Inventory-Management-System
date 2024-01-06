@@ -54,9 +54,9 @@ const synchronize = async function (options) {
  * Check the database connection
  * returns {boolean} connection status of the database
  */
-const connection = async () => {
+const connection = async (dnd_inventory) => {
  const connection = new Sequelize(
-  '',
+  dnd_inventory,
   credentials.username,
   credentials.password,
   options
