@@ -29,6 +29,7 @@ const fields = {
  Photo: DataTypes.BLOB,
  SKU: DataTypes.STRING,
  Brand: DataTypes.STRING,
+ Size: DataTypes.STRING,
 };
 
 const Products = Database.session.define('Products', fields);
