@@ -1,4 +1,5 @@
 import Database from '../database.js';
+import { DataTypes } from 'sequelize';
 import Users from '../models/Users.js';
 import Orders from '../models/Orders.js';
 import OrderDetails from '../models/OrderDetails.js';
@@ -12,45 +13,59 @@ import Permissions from '../models/Permissions.js';
 // Run this Script to initialize and create the database with tables in mysql
 
 (async () => {
- try {
-  // Suppliers to Supplier_Products (One-to-Many)
-  Suppliers.hasMany(SupplierProducts, { foreignKey: 'SupplierID' });
-  SupplierProducts.belongsTo(Suppliers, { foreignKey: 'SupplierID' });
+ Users.hasMany(Permissions);
+ Permissions.belongsTo(Users);
 
-  // Products to Supplier_Products (One-to-Many)
-  Products.hasMany(SupplierProducts, { foreignKey: 'ProductID' });
-  SupplierProducts.belongsTo(Products, { foreignKey: 'ProductID' });
+ // Products to Inventory
+ Products.hasMany(Inventory, { foreignKey: 'ProductID' });
+ Inventory.belongsTo(Products, { foreignKey: 'ProductID' });
 
-  // Products to Inventory (One-to-One)
-  Products.hasOne(Inventory, { foreignKey: 'ProductID' });
-  Inventory.belongsTo(Products, { foreignKey: 'ProductID' });
+ // Products to Orders
+ Products.belongsToMany(Orders, {
+  through: OrderDetails,
+  foreignKey: 'ProductID',
+ });
+ Orders.belongsToMany(Products, {
+  through: OrderDetails,
+  foreignKey: 'OrderID',
+ });
+ Products.hasMany(OrderDetails, { foreignKey: 'ProductID' });
+ OrderDetails.belongsTo(Products, { foreignKey: 'ProductID' });
+ Orders.hasMany(OrderDetails, { foreignKey: 'OrderID' });
+ OrderDetails.belongsTo(Orders, { foreignKey: 'OrderID' });
 
-  // Orders to Order_Details (One-to-Many)
-  Orders.hasMany(OrderDetails, { foreignKey: 'OrderID' });
-  OrderDetails.belongsTo(Orders, { foreignKey: 'OrderID' });
+ //Products to Suppliers
+ Products.belongsToMany(Suppliers, {
+  through: SupplierProducts,
+  foreignKey: 'ProductID',
+ });
+ Suppliers.belongsToMany(Products, {
+  through: SupplierProducts,
+  foreignKey: 'SupplierID',
+ });
+ Products.hasMany(SupplierProducts, { foreignKey: 'ProductID' });
+ SupplierProducts.belongsTo(Products, { foreignKey: 'ProductID' });
+ Suppliers.hasMany(SupplierProducts, { foreignKey: 'SupplierID' });
+ SupplierProducts.belongsTo(Suppliers, { foreignKey: 'SupplierID' });
 
-  // Products to Order_Details (One-to-Many)
-  Products.hasMany(OrderDetails, { foreignKey: 'ProductID' });
-  OrderDetails.belongsTo(Products, { foreignKey: 'ProductID' });
+ //Orders to Deliveries
+ Orders.hasOne(Deliveries, { foreignKey: 'OrderID' });
+ Deliveries.belongsTo(Orders, { foreignKey: 'OrderID' });
 
-  // Orders to Deliveries (One-to-One)
-  Orders.hasOne(Deliveries, { foreignKey: 'OrderID' });
-  Deliveries.belongsTo(Orders, { foreignKey: 'OrderID' });
+ //   Suppliers to Orders
+ Suppliers.hasMany(Orders, { foreignKey: 'SupplierID' });
+ Orders.belongsTo(Suppliers, { foreignKey: 'SupplierID' });
 
-  // Users to Permissions (One-to-Many)
-  Users.hasMany(Permissions, { foreignKey: 'UserID' });
-  Permissions.belongsTo(Users, { foreignKey: 'UserID' });
- } catch (error) {
-  console.log(`${error.name}: ${error.message}`);
-  process.exit(1);
- }
+ console.log('Initializing database...');
+
+ const dnd_inventory = Database.credentials.database;
 
  try {
   // Test the connection to the database
-  const connection = await Database.connection();
+  const connection = await Database.connection(dnd_inventory);
 
   // Create the database if it does not exist
-  await connection.query(`CREATE DATABASE ${Database.credentials.database};`);
+  await connection.query(`CREATE DATABASE ${dnd_inventory};`);
 
   // Close the connection to the database
   await connection.close();
