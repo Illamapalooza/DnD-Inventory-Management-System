@@ -11,6 +11,8 @@ import Suppliers from './routes/Suppliers.jsx';
 import EditProduct from './routes/EditProduct.jsx';
 import AddSupplier from './routes/AddSupplier.jsx';
 import EditSupplier from './routes/EditSupplier.jsx';
+import Inventory from './routes/Inventory.jsx';
+import EditOrder from './routes/EditOrder.jsx';
 
 const App = () => {
  return (
@@ -24,6 +26,7 @@ const App = () => {
      <Route path="/products/add-products" exact element={AddProducts()}></Route>
      <Route path="/orders" exact element={Orders()}></Route>
      <Route path="/orders/add-orders" exact element={AddOrders()}></Route>
+     {/* <Route path="/orders/edit-order/:id" element={EditOrder()}></Route> */}
      <Route path="/suppliers" exact element={Suppliers()}></Route>
      <Route path="/products/edit-product/:id" element={EditProduct()}></Route>
      <Route
@@ -35,6 +38,7 @@ const App = () => {
       path="/suppliers/edit-supplier/:id"
       element={EditSupplier()}
      ></Route>
+     <Route path="/inventory" exact element={Inventory()}></Route>
     </Routes>
    </Router>
   </div>
