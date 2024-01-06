@@ -15,10 +15,17 @@ const fields = {
    key: 'SupplierID',
   },
  },
+ PONumber: DataTypes.STRING,
  OrderDate: DataTypes.DATE,
  ExpectedDeliveryDate: DataTypes.DATE,
- Status: DataTypes.STRING,
- PaymentStatus: DataTypes.STRING,
+ Status: DataTypes.ENUM('Pending', 'Delivered', 'Cancelled'),
+ PaymentStatus: DataTypes.ENUM(
+  'Pending',
+  'Paid',
+  'Cancelled',
+  'Refunded',
+  'Overdue'
+ ),
  InvoiceNumber: DataTypes.STRING,
 };
 
