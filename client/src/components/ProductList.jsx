@@ -133,7 +133,7 @@ const ProductList = ({ onTotalProducts }) => {
          <th className="p-4">#</th>
          <th className="p-4">Product</th>
          <th className="p-4">Unit Price</th>
-         <th className="p-4">Qty</th>
+         <th className="p-4">Size</th>
          <th className="p-4">Category</th>
          <th className="p-4">Action</th>
         </tr>
