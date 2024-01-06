@@ -109,9 +109,9 @@ const Sidebar = () => {
        <span className="mx-2 text-sm font-medium">Suppliers</span>
       </Link>
 
-      <a
+      <Link
+       to="/inventory"
        className="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-gray-100   hover:text-gray-700"
-       href="#"
       >
        <svg
         viewBox="0 0 24 24"
@@ -132,7 +132,7 @@ const Sidebar = () => {
        </svg>
 
        <span className="mx-2 text-sm font-medium">Inventory</span>
-      </a>
+      </Link>
 
       <Link
        to="/orders"
