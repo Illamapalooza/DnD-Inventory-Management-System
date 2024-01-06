@@ -1,36 +1,76 @@
 import React from 'react';
 import OrderItem from './OrderItem.jsx';
 import Pagination from './Pagination.jsx';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const OrderList = () => {
- const sampleOrder = [
-  {
-   id: 1,
-   poNumber: '123',
-   supplier: 'DnD',
-   orderDate: '2021-03-01',
-   deliveryDate: '2021-03-01',
-   itemsOrdered: ['Milk'],
-   status: 'Pending',
-   totalValue: '$200',
-   paymentStatus: 'Paid',
-   receiving: 'Received',
-   invoiceNumber: '1234',
-  },
-  {
-   id: 2,
-   poNumber: '123',
-   supplier: 'DnD',
-   orderDate: '2021-03-01',
-   deliveryDate: '2021-03-01',
-   itemsOrdered: ['Milk'],
-   status: 'Pending',
-   totalValue: '$200',
-   paymentStatus: 'Paid',
-   receiving: 'Received',
-   invoiceNumber: '1234',
-  },
- ];
+ const [orders, setOrders] = useState([]);
+
+ const [search, setSearch] = useState('');
+
+ const [suppliers, setSuppliers] = useState([]);
+
+ const [orderDetails, setOrderDetails] = useState([]);
+
+ useEffect(() => {
+  // Fetch all orders and suppliers data
+  axios
+   .get('http://localhost:3000/orders')
+   .then((ordersRes) => {
+    const ordersData = ordersRes.data;
+    setOrders(ordersData);
+
+    // Fetch all suppliers data and store it in an object with SupplierID as keys
+    axios
+     .get('http://localhost:3000/suppliers')
+     .then((suppliersRes) => {
+      const suppliersData = suppliersRes.data;
+      const suppliersMap = {};
+
+      suppliersData.forEach((supplier) => {
+       suppliersMap[supplier.SupplierID] = supplier.Name;
+      });
+
+      setSuppliers(suppliersMap);
+
+      ordersData.forEach((order) => {
+       const id = order.OrderID;
+
+       axios
+        .get(`http://localhost:3000/orders/order-details/`)
+        .then((orderDetailsRes) => {
+         const orderDetailsData = orderDetailsRes.data;
+         const orderDetailsMap = {};
+
+         orderDetailsData.forEach((orderDetail) => {
+          orderDetailsMap[orderDetail.OrderID] = orderDetail.Price;
+         });
+
+         setOrderDetails(orderDetailsMap);
+        })
+        .catch((error) =>
+         console.error('Error fetching order details:', error)
+        );
+      });
+     })
+     .catch((error) => console.error('Error fetching suppliers:', error));
+   })
+   .catch((error) => console.error('Error fetching orders:', error));
+ }, []);
+
+ const handleInputChange = (e) => {
+  setSearch(e.target.value);
+ };
+
+ const handleSearch = () => {
+  axios
+   .get(`http://localhost:3000/orders/search?query=${search}`)
+   .then((response) => {
+    setOrders(response.data);
+   })
+   .catch((error) => console.error('Error:', error));
+ };
 
  return (
   <div>
@@ -40,15 +80,20 @@ const OrderList = () => {
       <div className="font-semibold text-lg text-foreground">Orders List</div>
      </div>
      <div className="flex space-x-4 items-center">
-      <div class="flex pt-2 relative mx-auto text-gray-600 items-center">
+      <div className="flex pt-2 relative mx-auto text-gray-600 items-center">
        <input
         className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none items-center"
         type="search"
         name="search"
-        placeholder="Search"
+        placeholder="Search Orders"
         decoration="none"
+        value={search}
+        onChange={handleInputChange}
        />
-       <button type="submit" className="absolute right-0 top-0 mt-5 mr-4">
+       <button
+        className="absolute right-0 top-0 mt-5 mr-4"
+        onClick={handleSearch}
+       >
         <svg
          xmlns="http://www.w3.org/2000/svg"
          fill="none"
@@ -104,14 +149,19 @@ const OrderList = () => {
          <th className="p-4">Order Status</th>
          <th className="p-4">Total Order Value</th>
          <th className="p-4">Payment Status</th>
-         <th className="p-4">Receiving</th>
          <th className="p-4">Invoice Number</th>
          <th className="p-4">Action</th>
         </tr>
        </thead>
        <tbody>
-        {sampleOrder.map((order) => (
-         <OrderItem key={order.id} order={order} />
+        {orders.map((order) => (
+         <OrderItem
+          key={order.OrderID}
+          order={order}
+          supplier={suppliers[order.SupplierID]}
+          orderDetails={orderDetails[order.OrderID]}
+          itemsOrdered={order.OrderID}
+         />
         ))}
        </tbody>
       </table>
