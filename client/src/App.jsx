@@ -13,6 +13,7 @@ import AddSupplier from './routes/AddSupplier.jsx';
 import EditSupplier from './routes/EditSupplier.jsx';
 import Inventory from './routes/Inventory.jsx';
 import EditOrder from './routes/EditOrder.jsx';
+import Deliveries from './routes/Deliveries.jsx';
 
 const App = () => {
  return (
@@ -39,6 +40,7 @@ const App = () => {
       element={EditSupplier()}
      ></Route>
      <Route path="/inventory" exact element={Inventory()}></Route>
+     <Route path="/deliveries" exact element={Deliveries()}></Route>
     </Routes>
    </Router>
   </div>
