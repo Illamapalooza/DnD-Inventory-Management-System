@@ -16,8 +16,8 @@ const fields = {
   },
  },
  PONumber: DataTypes.STRING,
- OrderDate: DataTypes.DATE,
- ExpectedDeliveryDate: DataTypes.DATE,
+ OrderDate: DataTypes.DATEONLY,
+ ExpectedDeliveryDate: DataTypes.DATEONLY,
  Status: DataTypes.ENUM('Pending', 'Delivered', 'Cancelled'),
  PaymentStatus: DataTypes.ENUM(
   'Pending',
