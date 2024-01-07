@@ -15,9 +15,9 @@ const fields = {
    key: 'OrderID',
   },
  },
- DeliveryDate: DataTypes.DATE,
+ DeliveryDate: DataTypes.DATEONLY,
  ReceivedBy: DataTypes.STRING,
- DeliveryCondition: DataTypes.STRING,
+ DeliveryCondition: DataTypes.ENUM('Good', 'Damaged', 'Lost', 'Satisfactory'),
 };
 
 const Deliveries = Database.session.define('Deliveries', fields);
