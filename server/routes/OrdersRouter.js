@@ -5,6 +5,7 @@ import Products from '../models/Products.js';
 import OrderDetails from '../models/OrderDetails.js';
 import { QueryTypes, Op } from 'sequelize';
 import Database from '../database.js';
+import Deliveries from '../models/Deliveries.js';
 
 // Path: server/routes/OrdersRouter.js
 const OrdersRouter = Router();
@@ -34,6 +35,11 @@ OrdersRouter.post('/add-orders', async (req, res) => {
    Quantity: item.Quantity,
    Price: post.totalValue,
   });
+ });
+
+ const deliveries = await Deliveries.create({
+  OrderID: order.OrderID,
+  DeliveryDate: post.expectedDeliveryDate,
  });
  res.json(post);
 });
@@ -179,39 +185,40 @@ OrdersRouter.get('/edit-order/:id', async (req, res) => {
  res.json(order);
 });
 
-OrdersRouter.get('/edit-order-details/:id', async (req, res) => {
- const id = req.params.id;
- const orderDetails = await OrderDetails.findByPk(id);
- res.json(orderDetails);
-});
+// OrdersRouter.get('/edit-order-details/:id', async (req, res) => {
+//  const id = req.params.id;
+//  const orderDetails = await OrderDetails.findByPk(id);
+//  res.json(orderDetails);
+// });
+
+// OrdersRouter.post('/edit-order/:id', async (req, res) => {
+//  const id = req.params.id;
+//  const post = req.body;
+//  await Orders.update(
+//   {
+//    PONumber: post.poNumber,
+//    OrderDate: post.orderDate,
+//    ExpectedDeliveryDate: post.expectedDeliveryDate,
+//    Status: post.status,
+//    PaymentStatus: post.paymentStatus,
+//    SupplierID: post.supplierID,
+//    InvoiceNumber: post.invoiceNumber,
+//   },
+//   { where: { OrderID: id } }
+//  );
+//  post.itemsOrdered.forEach(async (item) => {
+//   await OrderDetails.update(
+//    {
+//     OrderID: id,
+//     ProductID: item.ProductID,
+//     Quantity: item.Quantity,
+//     Price: post.totalValue,
+//    },
+//    { where: { OrderID: id } }
+//   );
+//  });
+
+//  res.json(post);
+// });
+
 export default OrdersRouter;
-
-OrdersRouter.post('/edit-order/:id', async (req, res) => {
- const id = req.params.id;
- const post = req.body;
- await Orders.update(
-  {
-   PONumber: post.poNumber,
-   OrderDate: post.orderDate,
-   ExpectedDeliveryDate: post.expectedDeliveryDate,
-   Status: post.status,
-   PaymentStatus: post.paymentStatus,
-   SupplierID: post.supplierID,
-   InvoiceNumber: post.invoiceNumber,
-  },
-  { where: { OrderID: id } }
- );
- post.itemsOrdered.forEach(async (item) => {
-  await OrderDetails.update(
-   {
-    OrderID: id,
-    ProductID: item.ProductID,
-    Quantity: item.Quantity,
-    Price: post.totalValue,
-   },
-   { where: { OrderID: id } }
-  );
- });
-
- res.json(post);
-});
