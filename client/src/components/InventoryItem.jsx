@@ -1,8 +1,22 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { useState } from 'react';
 
 const InventoryItem = ({ item, handleDelete }) => {
+ const stockLevel = () => {
+  if (item.Quantity <= item.ReorderLevel) {
+   return 'text-red-600 border border-red-600 p-2 rounded-lg';
+  } else if (
+   item.Quantity > item.ReorderLevel &&
+   item.Quantity <= item.ReorderLevel + 200
+  ) {
+   return 'text-green-600 border border-green-600 p-2 rounded-lg';
+  } else if (item.Quantity > item.ReorderLevel + 200) {
+   return 'text-orange-600 border border-orange-600 p-2 rounded-lg';
+  } else {
+   return 'text-grayish-100 border border-grayish-100 p-2 rounded-lg';
+  }
+ };
+
  return (
   <tr className="bg-white-800 hover:bg-grayish-900 cursor-pointer">
    <td className="p-4">
@@ -11,22 +25,25 @@ const InventoryItem = ({ item, handleDelete }) => {
    <td className="p-4 whitespace-no-wrap">
     <div className="flex items-center">
      <div className="ml-4">
-      <div className="text-sm leading-5 font-medium text-foreground">
-       {item.ProductID}
+      <div className="text-sm leading-5 font-medium text-foreground flex flex-col justify-start">
+       {item.Name}
+       <span className="text-xs text-grayish font-thin">
+        Category: {item.Category}
+       </span>
       </div>
      </div>
     </div>
    </td>
    <td className="p-4 whitespace-no-wrap text-sm leading-5 text-grayish-100">
-    {item.Quantity}
+    <span className={stockLevel()}>{item.Quantity || 'N/A'}</span>
    </td>
    <td className="p-4 whitespace-no-wrap text-sm leading-5 text-grayish-100">
-    {item.ReorderLevel}
+    {item.ReorderLevel || 'N/A'}
    </td>
    <td className="p-4 whitespace-no-wrap text-sm leading-5 text-grayish-100">
-    {item.LastOrderDate}
+    {item.LastOrderDate || 'N/A'}
    </td>
-   <td className="flex p-4 whitespace-no-wrap text-right text-sm leading-5 font-medium space-x-2">
+   {/* <td className="flex p-4 whitespace-no-wrap text-right text-sm leading-5 font-medium space-x-2">
     <Link
      className="text-grayish-200 hover:text-grayish-500"
      to={`/products/edit-item/${item.InventoryID}`}
@@ -66,7 +83,7 @@ const InventoryItem = ({ item, handleDelete }) => {
       />
      </svg>
     </button>
-   </td>
+   </td> */}
   </tr>
  );
 };

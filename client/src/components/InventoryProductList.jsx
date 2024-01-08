@@ -11,13 +11,11 @@ const InventoryProductList = ({ onTotalProducts }) => {
 
  const [search, setSearch] = useState('');
 
- const sendTotalProduct = () => {
-  onTotalProducts(products);
- };
-
  useEffect(() => {
   axios.get('http://localhost:3000/inventory').then((res) => {
-   console.log(res.data);
+   const inventoryData = res.data;
+
+   setProducts(inventoryData);
   });
  }, []);
 
@@ -27,9 +25,14 @@ const InventoryProductList = ({ onTotalProducts }) => {
 
  const handleDelete = (id) => {};
 
- const handleSearch = () => {};
-
- sendTotalProduct();
+ const handleSearch = () => {
+  axios
+   .get(`http://localhost:3000/inventory/search?query=${search}`)
+   .then((response) => {
+    setProducts(response.data);
+   })
+   .catch((error) => console.error('Error:', error));
+ };
 
  return (
   <div>
@@ -102,18 +105,21 @@ const InventoryProductList = ({ onTotalProducts }) => {
        <thead>
         <tr className="text-left text-foreground-40 border-b border-b-grayish-700">
          <th className="p-4">#</th>
-         <th className="p-4">Product Name</th>
-         <th className="p-4">Stock Level</th>
+         <th className="p-4">Product</th>
+         <th className="p-4 flex flex-col justify-start">
+          Stock Level
+          <span className="text-xs font-thin text-grayish">Quantity</span>
+         </th>
          <th className="p-4">Reorder level</th>
          <th className="p-4">Last Order Date</th>
-         <th className="p-4">Action</th>
+         {/* <th className="p-4">Action</th> */}
         </tr>
        </thead>
        <tbody>
         {products.map((product) => (
          <InventoryItem
           key={product.productID}
-          product={product}
+          item={product}
           handleDelete={handleDelete}
          />
         ))}
