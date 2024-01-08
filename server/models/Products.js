@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import Database from '../database.js';
+import Inventory from './Inventory.js';
 
 const fields = {
  ProductID: {
@@ -33,5 +34,12 @@ const fields = {
 };
 
 const Products = Database.session.define('Products', fields);
+
+Products.afterCreate(async (product) => {
+ await Inventory.create({
+  ProductID: product.ProductID,
+  Quantity: 0,
+ });
+});
 
 export default Products;
