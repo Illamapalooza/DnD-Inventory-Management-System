@@ -21,6 +21,11 @@ app.use('/suppliers', SuppliersRouter);
 app.use('/inventory', InventoryRouter);
 app.use('/deliveries', DeliveriesRouter);
 
+app.use(
+ '/client/src/assets/ProductImages',
+ express.static('../client/src/assets/ProductImages')
+);
+
 app.listen(PORT, () => {
  console.log(`Server is running on port ${PORT}.`);
 });
