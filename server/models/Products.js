@@ -14,7 +14,7 @@ const fields = {
  },
  Description: DataTypes.TEXT,
  Category: DataTypes.ENUM(
-  'Beverages',
+  'Beverages/Drinks',
   'Bread/Bakery',
   'Canned/Jarred Goods',
   'Dairy',
@@ -27,7 +27,7 @@ const fields = {
   'Grains'
  ),
  UnitPrice: DataTypes.DECIMAL(10, 2),
- Photo: DataTypes.BLOB,
+ Photo: DataTypes.STRING,
  SKU: DataTypes.STRING,
  Brand: DataTypes.STRING,
  Size: DataTypes.STRING,
