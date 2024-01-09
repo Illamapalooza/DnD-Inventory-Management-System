@@ -1,22 +1,56 @@
 import { Router } from 'express';
 import Products from '../models/Products.js';
 import { Op } from 'sequelize';
+import multer from 'multer';
+import path from 'path';
 
 const ProductsRouter = Router();
 
-ProductsRouter.post('/add-products', async (req, res) => {
- const post = req.body;
- await Products.create({
-  Name: post.productName,
-  UnitPrice: post.unitPrice,
-  SKU: post.sku,
-  Description: post.description,
-  Brand: post.brand,
-  Supplier: post.supplier,
-  Category: post.category,
- });
- res.json(post);
+const storage = multer.diskStorage({
+ destination: (req, file, cb) => {
+  cb(null, '../client/src/assets/ProductImages');
+ },
+ filename: (req, file, cb) => {
+  cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname));
+ },
 });
+
+const upload = multer({
+ storage: storage,
+ limits: { fileSize: 5000000 },
+ fileFilter: (req, file, cb) => {
+  const fileTypes = /jpeg|jpg|png|gif/;
+  const mimetype = fileTypes.test(file.mimetype);
+  const extname = fileTypes.test(path.extname(file.originalname));
+
+  if (mimetype && extname) {
+   return cb(null, true);
+  } else {
+   cb('Error: Images Only!');
+  }
+ },
+});
+
+ProductsRouter.post(
+ '/add-products',
+ upload.single('photo'),
+ async (req, res) => {
+  const post = req.body;
+  await Products.create({
+   Name: post.productName,
+   Size: post.size,
+   UnitPrice: post.unitPrice,
+   SKU: post.sku,
+   Description: post.description,
+   Brand: post.brand,
+   Supplier: post.supplier,
+   Category: post.category,
+   Photo: req.file.path,
+  });
+
+  res.json(post);
+ }
+);
 
 ProductsRouter.get('/', async (req, res) => {
  const products = await Products.findAll();
@@ -51,6 +85,7 @@ ProductsRouter.post('/edit-product/:id', async (req, res) => {
  await Products.update(
   {
    Name: post.productName,
+   Size: post.size,
    UnitPrice: post.unitPrice,
    SKU: post.sku,
    Description: post.description,
@@ -76,6 +111,16 @@ ProductsRouter.get('/search', async (req, res) => {
      },
      {
       Description: {
+       [Op.like]: `%${query}%`,
+      },
+     },
+     {
+      Category: {
+       [Op.like]: `%${query}%`,
+      },
+     },
+     {
+      Brand: {
        [Op.like]: `%${query}%`,
       },
      },
