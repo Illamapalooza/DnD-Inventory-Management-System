@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const ProductItem = ({ product, handleDelete }) => {
+ const image = `http://localhost:3000/${product.Photo}`;
  return (
   <tr className="bg-white-800 hover:bg-grayish-900 cursor-pointer">
    <td className="p-4">
@@ -10,7 +11,7 @@ const ProductItem = ({ product, handleDelete }) => {
    </td>
    <td className="p-4 whitespace-no-wrap">
     <div className="flex items-center">
-     <img className="h-10 w-10 rounded" src={product.imageUrl} alt="" />
+     <img className="h-10 w-10 rounded" src={image} alt={product.Name} />
      <div className="ml-4">
       <div className="text-sm leading-5 font-medium text-foreground">
        {product.Name}
@@ -25,7 +26,7 @@ const ProductItem = ({ product, handleDelete }) => {
     ₱ {product.UnitPrice}
    </td>
    <td className="p-4 whitespace-no-wrap text-sm leading-5 text-grayish-100">
-    200
+    {product.Size}
    </td>
    <td className="p-4 whitespace-no-wrap text-sm leading-5 text-grayish-100">
     {product.Category}

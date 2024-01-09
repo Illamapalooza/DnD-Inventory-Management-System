@@ -25,6 +25,18 @@ const Validation = (formData) => {
   errors.category = '';
  }
 
+ if (formData.brand === '') {
+  errors.brand = 'Brand is required';
+ } else {
+  errors.brand = '';
+ }
+
+ if (formData.size === '') {
+  errors.size = 'Size is required';
+ } else {
+  errors.size = '';
+ }
+
  console.log(errors);
 
  return errors;

@@ -18,16 +18,23 @@ const AddProductsForm = () => {
   } else {
    setImagePreview(null);
   }
+
+  setFormData((prevFormData) => ({
+   ...prevFormData,
+   photo: file,
+  }));
  };
 
  const [formData, setFormData] = useState({
   productName: '',
+  size: '',
   unitPrice: '',
   sku: '',
   description: '',
   brand: '',
   supplier: '',
   category: '',
+  photo: '',
  });
 
  const handleChange = (e) => {
@@ -44,22 +51,38 @@ const AddProductsForm = () => {
    errors.productName === '' &&
    errors.unitPrice === '' &&
    errors.description === '' &&
-   errors.category === ''
+   errors.category === '' &&
+   errors.brand === '' &&
+   errors.size === ''
   ) {
+   const newFormData = new FormData();
+
+   newFormData.append('productName', formData.productName);
+   newFormData.append('size', formData.size);
+   newFormData.append('unitPrice', formData.unitPrice);
+   newFormData.append('sku', formData.sku);
+   newFormData.append('description', formData.description);
+   newFormData.append('brand', formData.brand);
+   newFormData.append('supplier', formData.supplier);
+   newFormData.append('category', formData.category);
+   newFormData.append('photo', formData.photo);
+
    axios
-    .post('http://localhost:3000/products/add-products', formData)
+    .post('http://localhost:3000/products/add-products', newFormData)
     .then((res) => {
      console.log('it works');
      if (res.status === 200) {
       alert('Product Added Successfully');
       setFormData({
        productName: '',
+       size: '',
        unitPrice: '',
        sku: '',
        description: '',
        brand: '',
        supplier: '',
        category: '',
+       photo: '',
       });
       setImagePreview(null);
      } else {
@@ -77,11 +100,13 @@ const AddProductsForm = () => {
   setFormData({
    productName: '',
    unitPrice: '',
+   size: '',
    sku: '',
    description: '',
    brand: '',
    supplier: '',
    category: '',
+   photo: '',
   });
 
   setImagePreview(null);
@@ -108,7 +133,7 @@ const AddProductsForm = () => {
          className="mb-4 h-auto rounded"
         />
        ) : (
-        <div className="mb-4 h-72 flex flex-col items-center justify-center bg-white rounded border border-grayish w-full w-full">
+        <div className="mb-4 h-72 flex flex-col items-center justify-center bg-white rounded border border-grayish w-full">
          <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -138,7 +163,6 @@ const AddProductsForm = () => {
                    cursor-pointer
                    "
         onChange={handleImageChange}
-        value={formData.image}
        />
       </div>
 
@@ -163,6 +187,22 @@ const AddProductsForm = () => {
          {errors.productName && (
           <span className="font-thin text-red-600 text-[12px] my-0 py-0">
            {errors.productName}
+          </span>
+         )}
+        </div>
+
+        {/* SIZE */}
+        <div>
+         <input
+          className="bg-white text-foreground rounded-lg p-2 border border-grayish w-full"
+          name="size"
+          placeholder="Size (per/kilo, per/liter, per/piece, small, 500g, 1L, etc.)"
+          onChange={handleChange}
+          value={formData.size}
+         />
+         {errors.size && (
+          <span className="font-thin text-red-600 text-[12px] my-0 py-0">
+           {errors.size}
           </span>
          )}
         </div>
