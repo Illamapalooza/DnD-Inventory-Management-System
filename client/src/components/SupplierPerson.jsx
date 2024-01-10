@@ -1,7 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 
-const SupplierPerson = ({ supplier, handleDelete }) => {
+const SupplierPerson = ({ supplier, handleDelete, supplierProducts }) => {
+ const [products, setProducts] = useState([]);
+
+ useEffect(() => {
+  axios
+   .get(`http://localhost:3000/suppliers/supplier-products/${supplierProducts}`)
+   .then((res) => {
+    const supplierProductsData = res.data;
+
+    setProducts(supplierProductsData);
+   });
+ }, []);
+
+ console.log(products);
+
  return (
   <tr className="bg-white-800 hover:bg-grayish-900 cursor-pointer">
    <td className="p-4">
@@ -17,7 +33,16 @@ const SupplierPerson = ({ supplier, handleDelete }) => {
     {supplier.Address}
    </td>
    <td className="p-4 whitespace-no-wrap text-sm leading-5 text-grayish-100">
-    Sample
+    {products.map((product) => {
+     return (
+      <div className="">
+       <div className="font-semibold">{product.ProductName}</div>
+       <div className="text-xs font-thin text-grayish">
+        Lead Time: {product.LeadTime} Hours
+       </div>
+      </div>
+     );
+    })}
    </td>
    <td className="p-4 whitespace-no-wrap text-sm leading-5 text-grayish-100">
     {supplier.Rating}

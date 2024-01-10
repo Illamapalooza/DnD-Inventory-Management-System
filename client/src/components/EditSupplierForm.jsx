@@ -4,28 +4,49 @@ import axios from 'axios';
 import Validation from '../components/SupplierValidation.jsx';
 import { useParams } from 'react-router-dom';
 
-const AddSupplier = () => {
+const EditSupplier = () => {
  const [supplierData, setSupplierData] = useState({
   supplierName: '',
   phone: '',
+  servicesProducts: [],
   address: '',
   rating: '',
  });
 
  const { id } = useParams();
 
+ const [products, setProducts] = useState([]);
+
  const [errors, setErrors] = useState({});
+
+ useEffect(() => {
+  axios.get('http://localhost:3000/products').then((res) => {
+   const productsData = res.data;
+
+   setProducts(productsData);
+  });
+ }, []);
 
  useEffect(() => {
   axios
    .get(`http://localhost:3000/suppliers/edit-supplier/${id}`)
    .then((res) => {
-    const supplierData = res.data;
+    const supplierProductsData = res.data;
+
+    const supplierProducts = supplierProductsData.map((item) => {
+     return {
+      ProductID: item.ProductID,
+      Name: item.ProductName,
+      LeadTime: item.LeadTime,
+     };
+    });
+
     setSupplierData({
-     supplierName: supplierData.Name,
-     phone: supplierData.Phone,
-     address: supplierData.Address,
-     rating: supplierData.Rating,
+     supplierName: supplierProductsData[0].SupplierName,
+     phone: supplierProductsData[0].Phone,
+     servicesProducts: supplierProducts,
+     address: supplierProductsData[0].Address,
+     rating: supplierProductsData[0].Rating,
     });
    });
  }, [id]);
@@ -46,13 +67,14 @@ const AddSupplier = () => {
    errors.address === ''
   ) {
    axios
-    .post(`http://localhost:3000/suppliers/edit-supplier/${id}`, supplierData)
+    .put(`http://localhost:3000/suppliers/edit-supplier/${id}`, supplierData)
     .then((res) => {
      if (res.status === 200) {
       alert('Supplier Updated Successfully');
       setSupplierData({
        supplierName: '',
        phone: '',
+       servicesProducts: [],
        address: '',
        rating: '',
       });
@@ -71,8 +93,35 @@ const AddSupplier = () => {
   setSupplierData({
    supplierName: '',
    phone: '',
+   servicesProducts: [],
    address: '',
    rating: '',
+  });
+ };
+
+ const handleItemChange = (index, e) => {
+  e.preventDefault();
+  const newItems = [...supplierData.servicesProducts];
+  newItems[index][e.target.name] = e.target.value;
+
+  console.log(newItems);
+  setSupplierData({ ...supplierData, servicesProducts: newItems });
+ };
+
+ const handleRemoveItem = (index, e) => {
+  e.preventDefault();
+  const newItems = supplierData.servicesProducts.filter((_, i) => i !== index);
+  setSupplierData({ ...supplierData, servicesProducts: newItems });
+ };
+
+ const handleAddItem = (e) => {
+  e.preventDefault();
+  setSupplierData({
+   ...supplierData,
+   servicesProducts: [
+    ...supplierData.servicesProducts,
+    { ProductID: '', Name: '', LeadTime: '' },
+   ],
   });
  };
 
@@ -151,6 +200,56 @@ const AddSupplier = () => {
           step={0.1}
          />
         </div>
+        <div className="col-span-2">
+         <label className="text-foreground block mb-2" htmlFor="itemsOrdered">
+          Supplier Products
+         </label>
+         {supplierData.servicesProducts.map((item, index) => (
+          <div key={index} className="grid grid-flow-col gap-4 mb-2">
+           <select
+            name="ProductID"
+            placeholder="Product Name"
+            value={item.ProductID}
+            onChange={(e) => handleItemChange(index, e)}
+            className="p-2 border border-gray-300 rounded-lg"
+           >
+            <option value="">Select Product</option>
+            {products.map((product) => (
+             <option key={product.ProductID} value={product.ProductID}>
+              {product.Name}
+             </option>
+            ))}
+           </select>
+           <input
+            type="number"
+            name="LeadTime"
+            placeholder="Lead Time in Hours"
+            value={item.LeadTime || ''}
+            onChange={(e) => handleItemChange(index, e)}
+            className="p-2 border border-gray-300 rounded-lg"
+           />
+           <div className="flex justify-evenly ">
+            <button
+             onClick={(e) => handleRemoveItem(index, e)}
+             className="text-red-500 hover:bg-gray-50 border-2 border-red-300 px-2 py-1 rounded-lg w-36"
+            >
+             Remove
+            </button>
+           </div>
+          </div>
+         ))}
+         {errors.itemsOrdered && (
+          <span className="font-thin text-red-600 text-[12px] my-0 py-0">
+           {errors.itemsOrdered}
+          </span>
+         )}
+         <div
+          onClick={handleAddItem}
+          className="bg-kelly-500 text-white p-2 rounded-lg hover:bg-kelly-400 w-36 cursor-pointer text-center mt-4"
+         >
+          Add More Items
+         </div>
+        </div>
        </div>
 
        <button
@@ -167,4 +266,4 @@ const AddSupplier = () => {
  );
 };
 
-export default AddSupplier;
+export default EditSupplier;
