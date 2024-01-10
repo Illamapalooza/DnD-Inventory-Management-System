@@ -2,6 +2,11 @@ import { DataTypes } from 'sequelize';
 import Database from '../database.js';
 
 const fields = {
+ SupplierProductID: {
+  type: DataTypes.INTEGER,
+  primaryKey: true,
+  autoIncrement: true,
+ },
  SupplierID: {
   type: DataTypes.INTEGER,
   allowNull: false,
