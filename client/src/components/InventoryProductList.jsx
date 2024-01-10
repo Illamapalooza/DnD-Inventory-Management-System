@@ -11,6 +11,15 @@ const InventoryProductList = ({ onTotalProducts }) => {
 
  const [search, setSearch] = useState('');
 
+ //  Pagination Logic
+
+ const [currentPage, setCurrentPage] = useState(1);
+ const [itemsPerPage, setItemsPerPage] = useState(10);
+
+ const indexOfLastItem = currentPage * itemsPerPage;
+ const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+ const currentInventory = products.slice(indexOfFirstItem, indexOfLastItem);
+
  useEffect(() => {
   axios.get('http://localhost:3000/inventory').then((res) => {
    const inventoryData = res.data;
@@ -32,6 +41,10 @@ const InventoryProductList = ({ onTotalProducts }) => {
     setProducts(response.data);
    })
    .catch((error) => console.error('Error:', error));
+ };
+
+ const handlePageChange = (pageNumber) => {
+  setCurrentPage(pageNumber);
  };
 
  return (
@@ -116,7 +129,7 @@ const InventoryProductList = ({ onTotalProducts }) => {
         </tr>
        </thead>
        <tbody>
-        {products.map((product) => (
+        {currentInventory.map((product) => (
          <InventoryItem
           key={product.productID}
           item={product}
@@ -130,9 +143,9 @@ const InventoryProductList = ({ onTotalProducts }) => {
     <div className="w-full flex justify-end ">
      <Pagination
       totalItems={products.length}
-      itemsPerPage={10}
-      currentPage={1}
-      onPageChange={3}
+      itemsPerPage={itemsPerPage}
+      currentPage={currentPage}
+      onPageChange={handlePageChange}
      />
     </div>
    </div>

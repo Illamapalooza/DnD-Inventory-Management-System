@@ -9,6 +9,15 @@ const ProductList = ({ onTotalProducts }) => {
 
  const [search, setSearch] = useState('');
 
+ //  Pagination Logic
+
+ const [currentPage, setCurrentPage] = useState(1);
+ const [itemsPerPage, setItemsPerPage] = useState(10);
+
+ const indexOfLastItem = currentPage * itemsPerPage;
+ const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+ const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
+
  const sendTotalProduct = () => {
   onTotalProducts(products);
  };
@@ -50,6 +59,10 @@ const ProductList = ({ onTotalProducts }) => {
  };
 
  sendTotalProduct();
+
+ const handlePageChange = (pageNumber) => {
+  setCurrentPage(pageNumber);
+ };
 
  return (
   <div>
@@ -139,7 +152,7 @@ const ProductList = ({ onTotalProducts }) => {
         </tr>
        </thead>
        <tbody>
-        {products.map((product) => (
+        {currentProducts.map((product) => (
          <ProductItem
           key={product.productID}
           product={product}
@@ -153,9 +166,9 @@ const ProductList = ({ onTotalProducts }) => {
     <div className="w-full flex justify-end ">
      <Pagination
       totalItems={products.length}
-      itemsPerPage={10}
-      currentPage={1}
-      onPageChange={3}
+      itemsPerPage={itemsPerPage}
+      currentPage={currentPage}
+      onPageChange={handlePageChange}
      />
     </div>
    </div>

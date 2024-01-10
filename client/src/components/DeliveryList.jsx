@@ -10,6 +10,15 @@ const DeliveryList = () => {
 
  const [search, setSearch] = useState('');
 
+ //  Pagination Logic
+
+ const [currentPage, setCurrentPage] = useState(1);
+ const [itemsPerPage, setItemsPerPage] = useState(10);
+
+ const indexOfLastItem = currentPage * itemsPerPage;
+ const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+ const currentDeliveries = deliveries.slice(indexOfFirstItem, indexOfLastItem);
+
  useEffect(() => {
   axios
    .get('http://localhost:3000/deliveries')
@@ -44,6 +53,10 @@ const DeliveryList = () => {
     window.location.reload();
    })
    .catch((error) => console.error('Error:', error));
+ };
+
+ const handlePageChange = (pageNumber) => {
+  setCurrentPage(pageNumber);
  };
 
  return (
@@ -126,7 +139,7 @@ const DeliveryList = () => {
         </tr>
        </thead>
        <tbody>
-        {deliveries.map((delivery) => (
+        {currentDeliveries.map((delivery) => (
          <DeliveryItem
           key={delivery.DeliveryID}
           delivery={delivery}
@@ -139,10 +152,10 @@ const DeliveryList = () => {
     </div>
     <div className="w-full flex justify-end">
      <Pagination
-      totalItems={100}
-      itemsPerPage={20}
-      currentPage={1}
-      onPageChange={3}
+      totalItems={deliveries.length}
+      itemsPerPage={itemsPerPage}
+      currentPage={currentPage}
+      onPageChange={handlePageChange}
      />
     </div>
    </div>

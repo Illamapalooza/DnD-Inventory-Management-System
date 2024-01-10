@@ -13,7 +13,7 @@ const Pagination = ({
   <div className="flex items-center space-x-2 bg-white-800 p-4">
    <span className="text-foreground-200">Total {totalItems} Items</span>
    <button
-    className="rounded-xl bg-none text-foreground px-3 py-1 border border-grayish-700"
+    className="rounded-xl bg-none text-foreground px-3 py-1 border border-grayish-700 cursor-pointer"
     onClick={() => onPageChange(currentPage - 1)}
     disabled={currentPage === 1}
    >

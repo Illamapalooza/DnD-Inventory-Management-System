@@ -7,9 +7,16 @@ import axios from 'axios';
 const SupplierList = () => {
  const [suppliers, setSuppliers] = useState([]);
 
- const [supplierProducts, setSupplierProducts] = useState([]);
-
  const [search, setSearch] = useState('');
+
+ //  Pagination Logic
+
+ const [currentPage, setCurrentPage] = useState(1);
+ const [itemsPerPage, setItemsPerPage] = useState(10);
+
+ const indexOfLastItem = currentPage * itemsPerPage;
+ const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+ const currentSuppliers = suppliers.slice(indexOfFirstItem, indexOfLastItem);
 
  useEffect(() => {
   axios
@@ -45,6 +52,10 @@ const SupplierList = () => {
     window.location.reload();
    })
    .catch((error) => console.error('Error:', error));
+ };
+
+ const handlePageChange = (pageNumber) => {
+  setCurrentPage(pageNumber);
  };
 
  return (
@@ -127,7 +138,7 @@ const SupplierList = () => {
         </tr>
        </thead>
        <tbody>
-        {suppliers.map((supplier) => (
+        {currentSuppliers.map((supplier, index) => (
          <SupplierPerson
           key={supplier.id}
           supplier={supplier}
@@ -142,9 +153,9 @@ const SupplierList = () => {
     <div className="w-full flex justify-end ">
      <Pagination
       totalItems={suppliers.length}
-      itemsPerPage={20}
-      currentPage={1}
-      onPageChange={3}
+      itemsPerPage={itemsPerPage}
+      currentPage={currentPage}
+      onPageChange={handlePageChange}
      />
     </div>
    </div>

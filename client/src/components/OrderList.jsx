@@ -13,6 +13,15 @@ const OrderList = () => {
 
  const [orderDetails, setOrderDetails] = useState([]);
 
+ //  Pagination Logic
+
+ const [currentPage, setCurrentPage] = useState(1);
+ const [itemsPerPage, setItemsPerPage] = useState(10);
+
+ const indexOfLastItem = currentPage * itemsPerPage;
+ const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+ const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem);
+
  useEffect(() => {
   // Fetch all orders and suppliers data
   axios
@@ -70,6 +79,10 @@ const OrderList = () => {
     setOrders(response.data);
    })
    .catch((error) => console.error('Error:', error));
+ };
+
+ const handlePageChange = (pageNumber) => {
+  setCurrentPage(pageNumber);
  };
 
  return (
@@ -154,7 +167,7 @@ const OrderList = () => {
         </tr>
        </thead>
        <tbody>
-        {orders.map((order) => (
+        {currentOrders.map((order) => (
          <OrderItem
           key={order.OrderID}
           order={order}
@@ -169,10 +182,10 @@ const OrderList = () => {
     </div>
     <div className="w-full flex justify-end ">
      <Pagination
-      totalItems={100}
-      itemsPerPage={20}
-      currentPage={1}
-      onPageChange={3}
+      totalItems={orders.length}
+      itemsPerPage={itemsPerPage}
+      currentPage={currentPage}
+      onPageChange={handlePageChange}
      />
     </div>
    </div>
