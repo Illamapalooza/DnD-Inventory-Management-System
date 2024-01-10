@@ -1,9 +1,9 @@
 import React from 'react';
-import logo from '../assets/dnd-svg.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Validation from './RegistrationValidation.jsx';
 import axios from 'axios';
+import logo from '../assets/logo.png';
 
 const Registration = () => {
  const [formData, setFormData] = useState({
@@ -20,6 +20,7 @@ const Registration = () => {
  const navigate = useNavigate();
 
  const [errors, setErrors] = useState({});
+ const [loginError, setLoginError] = useState('');
 
  const handleInput = (e) => {
   setFormData((prevFormData) => ({
@@ -36,10 +37,11 @@ const Registration = () => {
     .post('http://localhost:3000/register', formData)
     .then((res) => {
      console.log('it works');
-     navigate('/login');
+     navigate('/auth/login');
     })
     .catch((err) => {
      console.log(err);
+     setLoginError(err.response.data);
     });
   }
  };
@@ -162,6 +164,11 @@ const Registration = () => {
         {errors.email}
        </span>
       )}
+      {loginError && (
+       <span className="font-thin text-red-600 text-[12px] ml-2 mb-0 py-0">
+        {loginError}
+       </span>
+      )}
 
       {/* Address */}
 
@@ -169,16 +176,21 @@ const Registration = () => {
        <span className="absolute">
         <svg
          xmlns="http://www.w3.org/2000/svg"
-         className="w-6 h-6 mx-3 text-gray-300 "
          fill="none"
          viewBox="0 0 24 24"
+         strokeWidth={1.5}
          stroke="currentColor"
-         strokeWidth="2"
+         className="w-6 h-6 mx-3 text-gray-300"
         >
          <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+          d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+         />
+         <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
          />
         </svg>
        </span>
@@ -201,16 +213,16 @@ const Registration = () => {
        <span className="absolute">
         <svg
          xmlns="http://www.w3.org/2000/svg"
-         className="w-6 h-6 mx-3 text-gray-300 "
          fill="none"
          viewBox="0 0 24 24"
+         strokeWidth={1.5}
          stroke="currentColor"
-         strokeWidth="2"
+         className="w-6 h-6 mx-3 text-gray-300"
         >
          <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+          d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"
          />
         </svg>
        </span>
@@ -234,16 +246,16 @@ const Registration = () => {
        <span className="absolute">
         <svg
          xmlns="http://www.w3.org/2000/svg"
-         className="w-6 h-6 mx-3 text-gray-300 "
          fill="none"
          viewBox="0 0 24 24"
+         strokeWidth={1.5}
          stroke="currentColor"
-         strokeWidth="2"
+         className="w-6 h-6 mx-3 text-gray-300"
         >
          <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+          d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
          />
         </svg>
        </span>
@@ -251,7 +263,7 @@ const Registration = () => {
        <select
         name="role"
         onChange={handleInput}
-        className="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg  focus:ring-kelly-300 focus:outline-none focus:ring focus:ring-opacity-40"
+        className="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg  focus:ring-kelly-300 focus:outline-none focus:ring focus:ring-opacity-40 cursor-pointer"
        >
         <option value="">Select Role</option>
         <option value="Admin">Admin</option>
@@ -340,7 +352,10 @@ const Registration = () => {
        </button>
 
        <div className=" text-center ">
-        <Link to="/login" className="text-sm text-kelly-500 hover:underline ">
+        <Link
+         to="/auth/login"
+         className="text-sm text-kelly-500 hover:underline "
+        >
          Already have an account?
         </Link>
        </div>

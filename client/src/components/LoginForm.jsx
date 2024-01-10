@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../assets/dnd-svg.svg';
+import logo from '../assets/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Validation from './LoginValidation.jsx';
@@ -12,6 +12,8 @@ const LoginForm = () => {
  });
 
  const [errors, setErrors] = useState({});
+
+ const [loginError, setLoginError] = useState('');
 
  const handleInput = (e) => {
   setFormData((prevFormData) => ({
@@ -27,17 +29,19 @@ const LoginForm = () => {
   setErrors(Validation(formData));
   if (errors.email === '' && errors.password === '') {
    axios
-    .post('http://localhost:3000/login', formData)
-    .then((res) => {
+    .post('http://localhost:3000/auth/login', formData)
+    .then((res, err) => {
      if (res.status === 200) {
       //   localStorage.setItem('token', res.data.token);
+      setLoginError('');
       navigate('/dashboard');
      } else {
       alert('Invalid Credentials');
      }
     })
     .catch((err) => {
-     console.log(err);
+     console.log(err.response.data);
+     setLoginError(err.response.data);
     });
   }
  };
@@ -84,6 +88,11 @@ const LoginForm = () => {
        {errors.password && (
         <span className="font-thin text-red-600 text-[12px] ml-2">
          {errors.password}
+        </span>
+       )}
+       {loginError && (
+        <span className="font-thin text-red-600 text-[12px] ml-2">
+         {loginError}
         </span>
        )}
       </div>
