@@ -7,6 +7,8 @@ import axios from 'axios';
 const SupplierList = () => {
  const [suppliers, setSuppliers] = useState([]);
 
+ const [supplierProducts, setSupplierProducts] = useState([]);
+
  const [search, setSearch] = useState('');
 
  useEffect(() => {
@@ -130,6 +132,7 @@ const SupplierList = () => {
           key={supplier.id}
           supplier={supplier}
           handleDelete={handleDelete}
+          supplierProducts={supplier.SupplierID}
          />
         ))}
        </tbody>
@@ -138,7 +141,7 @@ const SupplierList = () => {
     </div>
     <div className="w-full flex justify-end ">
      <Pagination
-      totalItems={100}
+      totalItems={suppliers.length}
       itemsPerPage={20}
       currentPage={1}
       onPageChange={3}
