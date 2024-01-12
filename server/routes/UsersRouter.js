@@ -2,6 +2,11 @@ import express from 'express';
 import { Router } from 'express';
 import Users from '../models/Users.js';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import validateToken from '../middlewares/AuthMiddleware.js';
+import checkRole from '../middlewares/RoleAuthMiddleware.js';
+
+const { sign } = jwt;
 
 const UsersRouter = Router();
 
@@ -12,13 +17,33 @@ UsersRouter.post('/auth/login', async (req, res) => {
   where: { Email: email },
  });
 
- if (!user) return res.status(404).send('User not found');
+ if (!user) return res.status(404).json({ error: 'User not found' });
 
  bcrypt.compare(password, user.Password).then((result) => {
   if (!result) {
-   return res.status(404).send('Password is Incorrect');
+   return res.status(404).json({ error: 'Password is Incorrect' });
   }
-  res.status(200).send('You are logged in');
+
+  //   const accessToken = sign(
+  //    {
+  //     Email: user.Email,
+  //     ID: user.UserID,
+  //     Role: user.Role,
+  //    },
+  //    'illamapalooza'
+  //   );
+
+  const accessToken = sign(
+   {
+    Email: user.Email,
+    ID: user.UserID,
+    Role: user.Role,
+   },
+   'illamapalooza',
+   { expiresIn: '1h' }
+  );
+
+  res.status(200).json(accessToken);
  });
 });
 
