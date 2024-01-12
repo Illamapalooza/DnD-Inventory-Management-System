@@ -3,6 +3,9 @@ import Products from '../models/Products.js';
 import { Op } from 'sequelize';
 import multer from 'multer';
 import path from 'path';
+import Database from '../database.js';
+import { QueryTypes } from 'sequelize';
+import Inventory from '../models/Inventory.js';
 
 const ProductsRouter = Router();
 
@@ -29,6 +32,45 @@ const upload = multer({
    cb('Error: Images Only!');
   }
  },
+});
+
+ProductsRouter.get('/valuation', async (req, res) => {
+ const valuation = await Database.session.query(
+  `SELECT SUM(Inventory.Quantity * Products.UnitPrice) AS Valuation FROM Inventory JOIN Products ON Inventory.ProductID = Products.ProductID`,
+  {
+   type: QueryTypes.SELECT,
+  }
+ );
+
+ res.json(valuation);
+});
+
+ProductsRouter.get('/out-of-stock/product-count', async (req, res) => {
+ const productCount = await Inventory.count({
+  where: {
+   Quantity: 0,
+  },
+ });
+
+ res.json(productCount);
+});
+
+ProductsRouter.get('/low-stock/product-count', async (req, res) => {
+ const productCount = await Inventory.count({
+  where: {
+   Quantity: {
+    [Op.and]: [{ [Op.gt]: 0 }, { [Op.lt]: 20 }],
+   },
+  },
+ });
+
+ res.json(productCount);
+});
+
+ProductsRouter.get('/product-count', async (req, res) => {
+ const productCount = await Products.count();
+
+ res.json(productCount);
 });
 
 ProductsRouter.post(

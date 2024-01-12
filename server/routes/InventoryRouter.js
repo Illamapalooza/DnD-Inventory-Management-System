@@ -2,8 +2,15 @@ import { Router } from 'express';
 
 import { QueryTypes, Op } from 'sequelize';
 import Database from '../database.js';
+import Inventory from '../models/Inventory.js';
 
 const InventoryRouter = Router();
+
+InventoryRouter.get('/inventory-count', async (req, res) => {
+ const inventoryCount = await Inventory.count();
+
+ res.json(inventoryCount);
+});
 
 InventoryRouter.get('/', async (req, res) => {
  const sql = `

@@ -19,7 +19,7 @@ const InventorySummary = ({ totalItems, lowStock, outOfStock, valuation }) => {
     </div>
     <div>
      <p className="font-semibold">Valuation:</p>
-     <p>${valuation.toFixed(2)}</p>
+     <p>₱{valuation.toFixed(2)}</p>
     </div>
    </div>
   </div>

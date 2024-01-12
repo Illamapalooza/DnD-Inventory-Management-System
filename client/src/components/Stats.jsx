@@ -1,6 +1,36 @@
 import React from 'react';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 
 const Stats = () => {
+ const [ordersCount, setOrdersCount] = useState([]);
+ const [productsCount, setProductsCount] = useState([]);
+ const [inventoryCount, setInventoryCount] = useState([]);
+
+ useEffect(() => {
+  axios.get('http://localhost:3000/orders/orders-count').then((res) => {
+   const ordersDataCount = res.data;
+
+   setOrdersCount(ordersDataCount);
+  });
+ }, []);
+
+ useEffect(() => {
+  axios.get('http://localhost:3000/inventory/inventory-count').then((res) => {
+   const inventoryCount = res.data;
+
+   setInventoryCount(inventoryCount);
+  });
+ }, []);
+
+ useEffect(() => {
+  axios.get('http://localhost:3000/products/product-count').then((res) => {
+   const productCount = res.data;
+
+   setProductsCount(productCount);
+  });
+ }, []);
+
  return (
   <div className="p-4 sm:ml-64">
    <div className="p-4 mt-10">
@@ -21,7 +51,9 @@ const Stats = () => {
        </div>
        <div>
         <p className="mb-2 text-sm font-medium text-gray-600">Total Orders</p>
-        <p className="text-lg font-semibold text-gray-700">6389</p>
+        <p className="text-lg font-semibold text-gray-700">
+         {ordersCount || 0}
+        </p>
        </div>
       </div>
      </div>
@@ -43,7 +75,9 @@ const Stats = () => {
         <p className="mb-2 text-sm font-medium text-gray-600">
          Inventory Items
         </p>
-        <p className="text-lg font-semibold text-gray-700">400</p>
+        <p className="text-lg font-semibold text-gray-700">
+         {inventoryCount || 0}
+        </p>
        </div>
       </div>
      </div>
@@ -67,8 +101,10 @@ const Stats = () => {
         </svg>
        </div>
        <div>
-        <p className="mb-2 text-sm font-medium text-gray-600">Total Sales</p>
-        <p className="text-lg font-semibold text-gray-700">376</p>
+        <p className="mb-2 text-sm font-medium text-gray-600">Total Products</p>
+        <p className="text-lg font-semibold text-gray-700">
+         {productsCount || 0}
+        </p>
        </div>
       </div>
      </div>

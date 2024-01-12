@@ -284,8 +284,8 @@ const AddOrderForm = () => {
          >
           <option value="">Select Payment Status</option>
           <option value="Pending">Pending</option>
-          <option value="Partial">Paid</option>
-          <option value="Paid">Cancelled</option>
+          <option value="Paid">Paid</option>
+          <option value="Cancelled">Cancelled</option>
           <option value="Refunded">Refunded</option>
           <option value="Overdue">Overdue</option>
          </select>

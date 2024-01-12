@@ -3,14 +3,26 @@ import NavBar from '../components/NavBar';
 import Sidebar from '../components/Sidebar';
 import ProductList from '../components/ProductList';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Products = () => {
  const [totalProducts, setTotalProducts] = useState(0);
+ const [outOfStockProducts, setOutOfStockProducts] = useState(0);
 
  const handleTotalProducts = (products) => {
   setTotalProducts(products.length);
  };
+
+ useEffect(() => {
+  axios
+   .get('http://localhost:3000/products/out-of-stock/product-count')
+   .then((res) => {
+    const outOfStockProductsData = res.data;
+
+    setOutOfStockProducts(outOfStockProductsData);
+   });
+ }, [totalProducts]);
 
  return (
   <div>
@@ -44,46 +56,28 @@ const Products = () => {
       </Link>
      </div>
 
-     <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
+     <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-2">
       <div className="min-w-0 rounded-lg shadow-xs overflow-hidden bg-white">
-       <div className="p-4 flex items-center">
+       <div className="p-4 flex items-center justify-center w-full h-full ">
         <div className="p-3 rounded-full text-orange-500 bg-orange-100 mr-4"></div>
-        <div>
-         <p className="mb-2 text-sm font-medium text-gray-600">
-          Total Products
+        <div className="flex justify-around w-full h-full px-8 items-center">
+         <p className="text-lg font-semibold text-gray-600">Total Products</p>
+         <p className="text-[36px] font-semibold text-gray-700 border rounded-lg px-2">
+          {totalProducts}
          </p>
-         <p className="text-lg font-semibold text-gray-700">{totalProducts}</p>
         </div>
        </div>
       </div>
       <div className="min-w-0 rounded-lg shadow-xs overflow-hidden bg-white">
        <div className="p-4 flex items-center">
         <div className="p-3 rounded-full text-green-500 bg-green-100 mr-4"></div>
-        <div>
-         <p className="mb-2 text-sm font-medium text-gray-600">New Products</p>
-         <p className="text-lg font-semibold text-gray-700">400</p>
-        </div>
-       </div>
-      </div>
-      <div className="min-w-0 rounded-lg shadow-xs overflow-hidden bg-white">
-       <div className="p-4 flex items-center">
-        <div className="p-3 rounded-full text-blue-500 bg-blue-100 mr-4"></div>
-        <div>
-         <p className="mb-2 text-sm font-medium text-gray-600">
-          Shortlist Products
+        <div className="flex justify-around w-full h-full px-8 items-center">
+         <p className="text-lg font-semibold text-gray-600">
+          Out of Stock Products
          </p>
-         <p className="text-lg font-semibold text-gray-700">376</p>
-        </div>
-       </div>
-      </div>
-      <div className="min-w-0 rounded-lg shadow-xs overflow-hidden bg-white">
-       <div className="p-4 flex items-center">
-        <div className="p-3 rounded-full text-teal-500 bg-teal-100 mr-4"></div>
-        <div>
-         <p className="mb-2 text-sm font-medium text-gray-600">
-          Empty Products
+         <p className="text-[36px] font-semibold text-gray-700 border rounded-lg px-2">
+          {outOfStockProducts}
          </p>
-         <p className="text-lg font-semibold text-gray-700">35</p>
         </div>
        </div>
       </div>
