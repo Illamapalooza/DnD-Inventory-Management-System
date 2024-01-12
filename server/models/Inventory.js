@@ -17,7 +17,7 @@ const fields = {
  },
  Quantity: DataTypes.INTEGER,
  ReorderLevel: DataTypes.INTEGER,
- LastOrderDate: DataTypes.DATE,
+ LastOrderDate: DataTypes.DATEONLY,
 };
 
 const Inventory = Database.session.define('Inventory', fields);
