@@ -5,6 +5,10 @@ import { Link } from 'react-router-dom';
 const OrderItem = ({ order, supplier, orderDetails, itemsOrdered }) => {
  const [items, setItems] = useState([]);
 
+ const [paymentStatus, setPaymentStatus] = useState(order.PaymentStatus);
+
+ const [status, setStatus] = useState(order.Status);
+
  useEffect(() => {
   axios
    .get(`http://localhost:3000/orders/order-details/${itemsOrdered}`)
@@ -14,6 +18,52 @@ const OrderItem = ({ order, supplier, orderDetails, itemsOrdered }) => {
     setItems(itemsOrderedData);
    });
  }, []);
+
+ const handlePaymentChange = (e) => {
+  e.preventDefault();
+
+  const paymentStatus = e.target.value;
+
+  axios
+   .put(`http://localhost:3000/orders/payment-status/${order.OrderID}`, {
+    PaymentStatus: paymentStatus,
+   })
+   .then((res) => {
+    if (res.status === 200) {
+     alert('Payment Status Updated Successfully');
+    } else {
+     alert('Invalid Credentials');
+    }
+   })
+   .catch((err) => {
+    console.log(err);
+   });
+
+  setPaymentStatus(paymentStatus);
+ };
+
+ const handleStatusChange = (e) => {
+  e.preventDefault();
+
+  const status = e.target.value;
+
+  axios
+   .put(`http://localhost:3000/orders/status/${order.OrderID}`, {
+    Status: status,
+   })
+   .then((res) => {
+    if (res.status === 200) {
+     alert('Status Updated Successfully');
+    } else {
+     alert('Invalid Credentials');
+    }
+   })
+   .catch((err) => {
+    console.log(err);
+   });
+
+  setStatus(status);
+ };
 
  return (
   <tr className="bg-white-800 hover:bg-grayish-900 cursor-pointer">
@@ -44,13 +94,41 @@ const OrderItem = ({ order, supplier, orderDetails, itemsOrdered }) => {
     })}
    </td>
    <td className="p-4 whitespace-no-wrap text-sm leading-5 text-grayish-100">
-    {order.Status}
+    <select
+     name="Status"
+     id="Status"
+     className="bg-transparent hover:bg-transparent cursor-pointer"
+     onChange={handleStatusChange}
+     value={status || ''}
+    >
+     <option value="" disabled>
+      Status
+     </option>
+     <option value="Pending">Pending</option>
+     <option value="Delivered">Delivered</option>
+     <option value="Cancelled">Cancelled</option>
+    </select>
    </td>
    <td className="p-4 whitespace-no-wrap text-sm leading-5 text-grayish-100">
     ₱ {orderDetails}
    </td>
    <td className="p-4 whitespace-no-wrap text-sm leading-5 text-grayish-100">
-    {order.PaymentStatus}
+    <select
+     name="PaymentStatus"
+     id="PaymentStatus"
+     onChange={handlePaymentChange}
+     className="bg-transparent hover:bg-transparent cursor-pointer"
+     value={paymentStatus || ''}
+    >
+     <option value="" disabled>
+      Payment Status
+     </option>
+     <option value="Pending">Pending</option>
+     <option value="Paid">Paid</option>
+     <option value="Cancelled">Cancelled</option>
+     <option value="Refunded">Refunded</option>
+     <option value="Overdue">Overdue</option>
+    </select>
    </td>
    <td className="p-4 whitespace-no-wrap text-sm leading-5 text-grayish-100">
     {order.InvoiceNumber}

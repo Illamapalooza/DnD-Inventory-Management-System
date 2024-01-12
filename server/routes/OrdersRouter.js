@@ -185,6 +185,59 @@ OrdersRouter.get('/edit-order/:id', async (req, res) => {
  res.json(order);
 });
 
+OrdersRouter.put('/payment-status/:id', async (req, res) => {
+ const id = req.params.id;
+ const paymentStatus = req.body.PaymentStatus;
+
+ await Database.session.query(
+  `UPDATE Orders SET PaymentStatus = '${paymentStatus}' WHERE OrderID = ${id}`,
+  { type: QueryTypes.UPDATE }
+ );
+});
+
+OrdersRouter.put('/status/:id', async (req, res) => {
+ const id = req.params.id;
+ const status = req.body.Status;
+
+ console.log(req.body);
+
+ await Database.session.query(
+  `UPDATE Orders SET Status = '${status}' WHERE OrderID = ${id}`,
+  { type: QueryTypes.UPDATE }
+ );
+
+ if (status === 'Delivered') {
+  const orderDetails = await Database.session.query(
+   `SELECT * FROM OrderDetails WHERE OrderID = ${id}`,
+   { type: QueryTypes.SELECT }
+  );
+
+  orderDetails.forEach(async (item) => {
+   const inventoryItems = await Database.session.query(
+    `SELECT Quantity FROM Inventory WHERE ProductID = ${item.ProductID}`,
+    { type: QueryTypes.SELECT }
+   );
+
+   if (inventoryItems.length > 0) {
+    const inventoryItemQuantity = inventoryItems[0].Quantity; // Accessing the quantity of the first (and likely only) item
+
+    // Update the quantity and last order date
+    const newQuantity =
+     parseInt(inventoryItemQuantity) + parseInt(item.Quantity);
+    await Database.session.query(
+     `UPDATE Inventory SET Quantity = ${newQuantity}, LastOrderDate = NOW() WHERE ProductID = ${item.ProductID}`,
+     { type: QueryTypes.UPDATE }
+    );
+   }
+  });
+ }
+});
+
+OrdersRouter.get('/orders-count', async (req, res) => {
+ const ordersCount = await Orders.count();
+ res.json(ordersCount);
+});
+
 // OrdersRouter.get('/edit-order-details/:id', async (req, res) => {
 //  const id = req.params.id;
 //  const orderDetails = await OrderDetails.findByPk(id);

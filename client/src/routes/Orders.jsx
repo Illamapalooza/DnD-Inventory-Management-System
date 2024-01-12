@@ -3,8 +3,36 @@ import NavBar from '../components/NavBar';
 import Sidebar from '../components/Sidebar';
 import OrderList from '../components/OrderList';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Orders = () => {
+ const [orders, setOrders] = useState([]);
+ const [ordersCount, setOrdersCount] = useState(0);
+ //  const [activeOrdersCount, setActiveOrdersCount] = useState(0);
+ //  const [completeOrdersCount, setCompleteOrdersCount] = useState(0);
+ //  const [cancelledOrdersCount, setCancelledOrdersCount] = useState(0);
+
+ useEffect(() => {
+  axios.get('http://localhost:3000/orders/orders-count').then((res) => {
+   const ordersCount = res.data;
+
+   setOrdersCount(ordersCount);
+  });
+ }, []);
+
+ useEffect(() => {
+  axios.get('http://localhost:3000/orders').then((res) => {
+   const orders = res.data;
+
+   setOrders(orders);
+  });
+ }, []);
+
+ const activeOrders = orders.filter((order) => order.Status === 'Pending');
+ const completeOrders = orders.filter((order) => order.Status === 'Delivered');
+ const cancelledOrders = orders.filter((order) => order.Status === 'Cancelled');
+
  return (
   <div>
    <NavBar />
@@ -42,7 +70,7 @@ const Orders = () => {
         <div className="p-3 rounded-full text-orange-500 bg-orange-100 mr-4"></div>
         <div>
          <p className="mb-2 text-sm font-medium text-gray-600">Total Orders</p>
-         <p className="text-lg font-semibold text-gray-700">6389</p>
+         <p className="text-lg font-semibold text-gray-700">{ordersCount}</p>
         </div>
        </div>
       </div>
@@ -51,7 +79,9 @@ const Orders = () => {
         <div className="p-3 rounded-full text-green-500 bg-green-100 mr-4"></div>
         <div>
          <p className="mb-2 text-sm font-medium text-gray-600">Active Orders</p>
-         <p className="text-lg font-semibold text-gray-700">400</p>
+         <p className="text-lg font-semibold text-gray-700">
+          {activeOrders.length}
+         </p>
         </div>
        </div>
       </div>
@@ -62,7 +92,9 @@ const Orders = () => {
          <p className="mb-2 text-sm font-medium text-gray-600">
           Complete Orders
          </p>
-         <p className="text-lg font-semibold text-gray-700">376</p>
+         <p className="text-lg font-semibold text-gray-700">
+          {completeOrders.length}
+         </p>
         </div>
        </div>
       </div>
@@ -73,7 +105,9 @@ const Orders = () => {
          <p className="mb-2 text-sm font-medium text-gray-600">
           Cancelled Orders
          </p>
-         <p className="text-lg font-semibold text-gray-700">35</p>
+         <p className="text-lg font-semibold text-gray-700">
+          {cancelledOrders.length}
+         </p>
         </div>
        </div>
       </div>
