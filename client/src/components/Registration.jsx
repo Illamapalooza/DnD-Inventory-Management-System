@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Validation from './RegistrationValidation.jsx';
 import axios from 'axios';
-import logo from '../assets/logo.png';
+import logo from '../assets/finalLogo.png';
 
 const Registration = () => {
  const [formData, setFormData] = useState({
@@ -41,7 +41,7 @@ const Registration = () => {
     })
     .catch((err) => {
      console.log(err);
-     setLoginError(err.response.data);
+     setLoginError(err.response.data.error);
     });
   }
  };
@@ -56,7 +56,7 @@ const Registration = () => {
       onSubmit={handleSubmit}
      >
       <div className="flex justify-center mx-auto">
-       <img className="w-auto h-10 sm:h-8" src={logo} alt="" />
+       <img className="w-auto h-10 sm:h-20" src={logo} alt="" />
       </div>
 
       <div className="flex items-center justify-center ">
@@ -268,7 +268,7 @@ const Registration = () => {
         <option value="">Select Role</option>
         <option value="Admin">Admin</option>
         <option value="Manager">Manager</option>
-        <option value="Employee">Employee</option>
+        <option value="Staff">Staff</option>
        </select>
       </div>
       {errors.role && (

@@ -1,11 +1,11 @@
 import React from 'react';
-import logo from '../assets/logo.png';
+import logo from '../assets/finalLogo.png';
 
 const Header = () => {
  return (
   <nav className="fixed top-0 z-50 bg-white shadow-md p-4 flex justify-between items-center w-full">
    <div className="w-10 h-10 mr-6">
-    <img src={logo} alt="Brand Logo" className="w-10 h-10" />
+    <img src={logo} alt="Brand Logo" className="w-auto h-auto" />
    </div>
 
    <div className="icons flex items-center space-x-4">
