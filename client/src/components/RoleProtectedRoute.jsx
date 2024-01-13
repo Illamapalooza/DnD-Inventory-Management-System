@@ -3,15 +3,19 @@ import { Navigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
 const RoleProtectedRoute = ({ children, allowedRoles }) => {
- const token = sessionStorage.getItem('token');
+ const token = localStorage.getItem('token');
  let userRole = null;
 
  if (token) {
-  const decoded = jwtDecode(token);
-  userRole = decoded.Role;
+  try {
+   const decoded = jwtDecode(token);
+   userRole = decoded.Role;
+  } catch (error) {
+   console.error('Error decoding token:', error);
+  }
  }
 
- return allowedRoles.includes(userRole) ? (
+ return userRole && allowedRoles.includes(userRole) ? (
   children
  ) : (
   <Navigate to="/unauthorized" />

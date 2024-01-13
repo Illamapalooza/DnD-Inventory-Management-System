@@ -1,15 +1,14 @@
 import React from 'react';
 import { Route, Navigate } from 'react-router-dom';
+import { useAuth } from '../util/AuthContext.jsx';
 
 const ProtectedRoute = ({ children }) => {
- const accesstoken = sessionStorage.getItem('token');
+ const { authState } = useAuth();
 
- if (!accesstoken) {
-  // If there's no token, redirect to the login page
+ if (!authState.isAuthenticated) {
   return <Navigate to="/auth/login" />;
  }
 
- // If there's a token, render the children (protected component)
  return children;
 };
 
