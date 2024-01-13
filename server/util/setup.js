@@ -8,14 +8,10 @@ import Products from '../models/Products.js';
 import Suppliers from '../models/Suppliers.js';
 import SupplierProducts from '../models/SupplierProducts.js';
 import Inventory from '../models/Inventory.js';
-import Permissions from '../models/Permissions.js';
 
 // Run this Script to initialize and create the database with tables in mysql
 
 (async () => {
- Users.hasMany(Permissions);
- Permissions.belongsTo(Users);
-
  // Products to Inventory
  Products.hasMany(Inventory, { foreignKey: 'ProductID' });
  Inventory.belongsTo(Products, { foreignKey: 'ProductID' });
