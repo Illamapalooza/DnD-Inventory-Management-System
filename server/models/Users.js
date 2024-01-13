@@ -26,7 +26,7 @@ const fields = {
   allowNull: false,
  },
  Role: {
-  type: DataTypes.STRING,
+  type: DataTypes.ENUM('Admin', 'Staff', 'Manager'),
   allowNull: false,
  },
  DateCreated: {
