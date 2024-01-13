@@ -3,8 +3,6 @@ import { Router } from 'express';
 import Users from '../models/Users.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import validateToken from '../middlewares/AuthMiddleware.js';
-import checkRole from '../middlewares/RoleAuthMiddleware.js';
 
 const { sign } = jwt;
 
@@ -23,15 +21,6 @@ UsersRouter.post('/auth/login', async (req, res) => {
   if (!result) {
    return res.status(404).json({ error: 'Password is Incorrect' });
   }
-
-  //   const accessToken = sign(
-  //    {
-  //     Email: user.Email,
-  //     ID: user.UserID,
-  //     Role: user.Role,
-  //    },
-  //    'illamapalooza'
-  //   );
 
   const accessToken = sign(
    {

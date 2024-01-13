@@ -3,6 +3,8 @@ import Deliveries from '../models/Deliveries.js';
 import { Op, QueryTypes } from 'sequelize';
 import Users from '../models/Users.js';
 import Database from '../database.js';
+import validateToken from '../middlewares/AuthMiddleware.js';
+import checkRole from '../middlewares/RoleAuthMiddleware.js';
 
 const DeliveriesRouter = Router();
 
@@ -93,19 +95,26 @@ DeliveriesRouter.put('/condition/:id', async (req, res) => {
   });
 });
 
-DeliveriesRouter.delete('/', async (req, res) => {
- const { id } = req.body;
+DeliveriesRouter.delete(
+ '/',
+ validateToken,
+ checkRole(['Admin', 'Manager']),
+ async (req, res) => {
+  const { id } = req.body;
 
- await Deliveries.destroy({
-  where: {
-   DeliveryID: id,
-  },
- })
-  .then(() => {
-   res.json('Delivery Record deleted');
+  console.log(req.headers.authorization);
+
+  await Deliveries.destroy({
+   where: {
+    DeliveryID: id,
+   },
   })
-  .catch((err) => {
-   res.status(500).send({ message: 'Error deleting item' });
-  });
-});
+   .then(() => {
+    res.json('Delivery Record deleted');
+   })
+   .catch((err) => {
+    res.status(500).send({ message: 'Error deleting item' });
+   });
+ }
+);
 export default DeliveriesRouter;

@@ -6,6 +6,8 @@ import OrderDetails from '../models/OrderDetails.js';
 import { QueryTypes, Op } from 'sequelize';
 import Database from '../database.js';
 import Deliveries from '../models/Deliveries.js';
+import validateToken from '../middlewares/AuthMiddleware.js';
+import checkRole from '../middlewares/RoleAuthMiddleware.js';
 
 // Path: server/routes/OrdersRouter.js
 const OrdersRouter = Router();
@@ -15,34 +17,39 @@ OrdersRouter.get('/', async (req, res) => {
  res.json(orders);
 });
 
-OrdersRouter.post('/add-orders', async (req, res) => {
- const post = req.body;
+OrdersRouter.post(
+ '/add-orders',
+ validateToken,
+ checkRole(['Manager', 'Admin']),
+ async (req, res) => {
+  const post = req.body;
 
- const order = await Orders.create({
-  PONumber: post.poNumber,
-  OrderDate: post.orderDate,
-  ExpectedDeliveryDate: post.expectedDeliveryDate,
-  Status: post.status,
-  PaymentStatus: post.paymentStatus,
-  SupplierID: post.supplierID,
-  InvoiceNumber: post.invoiceNumber,
- });
-
- post.itemsOrdered.forEach(async (item) => {
-  await OrderDetails.create({
-   OrderID: order.OrderID,
-   ProductID: item.ProductID,
-   Quantity: item.Quantity,
-   Price: post.totalValue,
+  const order = await Orders.create({
+   PONumber: post.poNumber,
+   OrderDate: post.orderDate,
+   ExpectedDeliveryDate: post.expectedDeliveryDate,
+   Status: post.status,
+   PaymentStatus: post.paymentStatus,
+   SupplierID: post.supplierID,
+   InvoiceNumber: post.invoiceNumber,
   });
- });
 
- const deliveries = await Deliveries.create({
-  OrderID: order.OrderID,
-  DeliveryDate: post.expectedDeliveryDate,
- });
- res.json(post);
-});
+  post.itemsOrdered.forEach(async (item) => {
+   await OrderDetails.create({
+    OrderID: order.OrderID,
+    ProductID: item.ProductID,
+    Quantity: item.Quantity,
+    Price: post.totalValue,
+   });
+  });
+
+  const deliveries = await Deliveries.create({
+   OrderID: order.OrderID,
+   DeliveryDate: post.expectedDeliveryDate,
+  });
+  res.json(post);
+ }
+);
 
 OrdersRouter.get('/supplier/:id', async (req, res) => {
  const id = req.params.id;
@@ -237,41 +244,5 @@ OrdersRouter.get('/orders-count', async (req, res) => {
  const ordersCount = await Orders.count();
  res.json(ordersCount);
 });
-
-// OrdersRouter.get('/edit-order-details/:id', async (req, res) => {
-//  const id = req.params.id;
-//  const orderDetails = await OrderDetails.findByPk(id);
-//  res.json(orderDetails);
-// });
-
-// OrdersRouter.post('/edit-order/:id', async (req, res) => {
-//  const id = req.params.id;
-//  const post = req.body;
-//  await Orders.update(
-//   {
-//    PONumber: post.poNumber,
-//    OrderDate: post.orderDate,
-//    ExpectedDeliveryDate: post.expectedDeliveryDate,
-//    Status: post.status,
-//    PaymentStatus: post.paymentStatus,
-//    SupplierID: post.supplierID,
-//    InvoiceNumber: post.invoiceNumber,
-//   },
-//   { where: { OrderID: id } }
-//  );
-//  post.itemsOrdered.forEach(async (item) => {
-//   await OrderDetails.update(
-//    {
-//     OrderID: id,
-//     ProductID: item.ProductID,
-//     Quantity: item.Quantity,
-//     Price: post.totalValue,
-//    },
-//    { where: { OrderID: id } }
-//   );
-//  });
-
-//  res.json(post);
-// });
 
 export default OrdersRouter;

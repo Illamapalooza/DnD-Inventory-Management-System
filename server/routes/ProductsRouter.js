@@ -6,6 +6,8 @@ import path from 'path';
 import Database from '../database.js';
 import { QueryTypes } from 'sequelize';
 import Inventory from '../models/Inventory.js';
+import validateToken from '../middlewares/AuthMiddleware.js';
+import checkRole from '../middlewares/RoleAuthMiddleware.js';
 
 const ProductsRouter = Router();
 
@@ -121,24 +123,29 @@ ProductsRouter.delete('/', async (req, res) => {
   });
 });
 
-ProductsRouter.post('/edit-product/:id', async (req, res) => {
- const id = req.params.id;
- const post = req.body;
- await Products.update(
-  {
-   Name: post.productName,
-   Size: post.size,
-   UnitPrice: post.unitPrice,
-   SKU: post.sku,
-   Description: post.description,
-   Brand: post.brand,
-   Supplier: post.supplier,
-   Category: post.category,
-  },
-  { where: { ProductID: id } }
- );
- res.json(post);
-});
+ProductsRouter.post(
+ '/edit-product/:id',
+ validateToken,
+ checkRole(['Admin', 'Manager']),
+ async (req, res) => {
+  const id = req.params.id;
+  const post = req.body;
+  await Products.update(
+   {
+    Name: post.productName,
+    Size: post.size,
+    UnitPrice: post.unitPrice,
+    SKU: post.sku,
+    Description: post.description,
+    Brand: post.brand,
+    Supplier: post.supplier,
+    Category: post.category,
+   },
+   { where: { ProductID: id } }
+  );
+  res.json(post);
+ }
+);
 
 ProductsRouter.get('/search', async (req, res) => {
  try {

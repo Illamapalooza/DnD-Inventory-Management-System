@@ -11,7 +11,6 @@ const validateToken = (req, res, next) => {
    expiresIn: '2d',
   };
   try {
-   // verify makes sure that the token hasn't expired and has been issued by us
    result = jwt.verify(
     token,
     /*process.env.JWT_SECRET*/ 'illamapalooza',

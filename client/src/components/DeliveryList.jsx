@@ -1,9 +1,9 @@
 import React from 'react';
 import Pagination from './Pagination.jsx';
-import SupplierPerson from './SupplierPerson.jsx';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import DeliveryItem from './DeliveryItem.jsx';
+import createAuthHeaders from '../util/createAuthHeaders.js';
 
 const DeliveryList = () => {
  const [deliveries, setDeliveries] = useState([]);
@@ -43,7 +43,10 @@ const DeliveryList = () => {
 
  const handleDelete = (id) => {
   axios
-   .delete(`http://localhost:3000/deliveries`, { data: { id: id } })
+   .delete(`http://localhost:3000/deliveries`, {
+    data: { id: id },
+    headers: createAuthHeaders(),
+   })
    .then((response) => {
     console.log(response);
     const updatedDeliveries = setDeliveries(

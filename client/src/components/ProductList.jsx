@@ -3,6 +3,7 @@ import ProductItem from './ProductItem.jsx';
 import Pagination from './Pagination.jsx';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import createAuthHeaders from '../util/createAuthHeaders.js';
 
 const ProductList = ({ onTotalProducts }) => {
  const [products, setProducts] = useState([]);
@@ -24,7 +25,9 @@ const ProductList = ({ onTotalProducts }) => {
 
  useEffect(() => {
   axios
-   .get('http://localhost:3000/products')
+   .get('http://localhost:3000/products', {
+    headers: createAuthHeaders(),
+   })
    .then((res) => {
     setProducts(res.data);
    })

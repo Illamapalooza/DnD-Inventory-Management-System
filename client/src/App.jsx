@@ -14,35 +14,147 @@ import EditSupplier from './routes/EditSupplier.jsx';
 import Inventory from './routes/Inventory.jsx';
 import EditOrder from './routes/EditOrder.jsx';
 import Deliveries from './routes/Deliveries.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+import Unaothorized from './routes/Unaothorized.jsx';
+import RoleProtectedRoute from './components/RoleProtectedRoute.jsx';
+import { AuthProvider } from './util/AuthContext.jsx';
+import RedirectIfAuthenticated from './util/RedirectIfAuthenticated.jsx';
 
 const App = () => {
  return (
   <div className="App">
-   <Router>
-    <Routes>
-     <Route path="/login" exact element={Login()} />
-     <Route path="/register" exact element={Registration()}></Route>
-     <Route path="/dashboard" exact element={Dashboard()}></Route>
-     <Route path="/products" exact element={Products()}></Route>
-     <Route path="/products/add-products" exact element={AddProducts()}></Route>
-     <Route path="/orders" exact element={Orders()}></Route>
-     <Route path="/orders/add-orders" exact element={AddOrders()}></Route>
-     {/* <Route path="/orders/edit-order/:id" element={EditOrder()}></Route> */}
-     <Route path="/suppliers" exact element={Suppliers()}></Route>
-     <Route path="/products/edit-product/:id" element={EditProduct()}></Route>
-     <Route
-      path="/suppliers/add-suppliers"
-      exact
-      element={AddSupplier()}
-     ></Route>
-     <Route
-      path="/suppliers/edit-supplier/:id"
-      element={EditSupplier()}
-     ></Route>
-     <Route path="/inventory" exact element={Inventory()}></Route>
-     <Route path="/deliveries" exact element={Deliveries()}></Route>
-    </Routes>
-   </Router>
+   <AuthProvider>
+    <Router>
+     <Routes>
+      <Route
+       path="/auth/login"
+       exact
+       element={
+        <RedirectIfAuthenticated>
+         <Login />
+        </RedirectIfAuthenticated>
+       }
+      />
+      <Route
+       path="/register"
+       exact
+       element={
+        <RedirectIfAuthenticated>
+         <Registration />
+        </RedirectIfAuthenticated>
+       }
+      />
+
+      <Route
+       path="/dashboard"
+       exact
+       element={
+        <ProtectedRoute>
+         <Dashboard />
+        </ProtectedRoute>
+       }
+      ></Route>
+      <Route
+       path="/products"
+       exact
+       element={
+        <ProtectedRoute>
+         <Products />
+        </ProtectedRoute>
+       }
+      ></Route>
+      <Route
+       path="/products/add-products"
+       exact
+       element={
+        <ProtectedRoute>
+         <AddProducts />
+        </ProtectedRoute>
+       }
+      ></Route>
+      <Route
+       path="/orders"
+       exact
+       element={
+        <ProtectedRoute>
+         <Orders />
+        </ProtectedRoute>
+       }
+      ></Route>
+      <Route
+       path="/orders/add-orders"
+       exact
+       element={
+        <RoleProtectedRoute allowedRoles={['Admin', 'Manager']}>
+         <ProtectedRoute>
+          <AddOrders />
+         </ProtectedRoute>
+        </RoleProtectedRoute>
+       }
+      ></Route>
+      {/* <Route path="/orders/edit-order/:id" element={EditOrder()}></Route> */}
+      <Route
+       path="/suppliers"
+       exact
+       element={
+        <ProtectedRoute>
+         <Suppliers />
+        </ProtectedRoute>
+       }
+      ></Route>
+      <Route
+       path="/products/edit-product/:id"
+       element={
+        <RoleProtectedRoute allowedRoles={['Admin', 'Manager']}>
+         <ProtectedRoute>
+          <EditProduct />
+         </ProtectedRoute>
+        </RoleProtectedRoute>
+       }
+      ></Route>
+      <Route
+       path="/suppliers/add-suppliers"
+       exact
+       element={
+        <RoleProtectedRoute allowedRoles={['Admin']}>
+         <ProtectedRoute>
+          <AddSupplier />
+         </ProtectedRoute>
+        </RoleProtectedRoute>
+       }
+      ></Route>
+      <Route
+       path="/suppliers/edit-supplier/:id"
+       element={
+        <RoleProtectedRoute allowedRoles={['Admin', 'Manager']}>
+         <ProtectedRoute>
+          <EditSupplier />
+         </ProtectedRoute>
+        </RoleProtectedRoute>
+       }
+      ></Route>
+      <Route
+       path="/inventory"
+       exact
+       element={
+        <ProtectedRoute>
+         <Inventory />
+        </ProtectedRoute>
+       }
+      ></Route>
+      <Route
+       path="/deliveries"
+       exact
+       element={
+        <ProtectedRoute>
+         <Deliveries />
+        </ProtectedRoute>
+       }
+      ></Route>
+      <Route path="/unauthorized" exact element={Unaothorized()}></Route>
+     </Routes>
+    </Router>
+   </AuthProvider>
   </div>
  );
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Validation from '../components/OrderValidation.jsx';
+import createAuthHeaders from '../util/createAuthHeaders.js';
 
 const AddOrderForm = () => {
  const [orderData, setOrderData] = useState({
@@ -76,7 +77,9 @@ const AddOrderForm = () => {
    errors.invoiceNumber === ''
   ) {
    axios
-    .post('http://localhost:3000/orders/add-orders', orderData)
+    .post('http://localhost:3000/orders/add-orders', orderData, {
+     headers: createAuthHeaders(),
+    })
     .then((res) => {
      if (res.status === 200) {
       alert('Order Added Successfully');

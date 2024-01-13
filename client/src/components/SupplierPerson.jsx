@@ -16,8 +16,6 @@ const SupplierPerson = ({ supplier, handleDelete, supplierProducts }) => {
    });
  }, []);
 
- console.log(products);
-
  return (
   <tr className="bg-white-800 hover:bg-grayish-900 cursor-pointer">
    <td className="p-4">

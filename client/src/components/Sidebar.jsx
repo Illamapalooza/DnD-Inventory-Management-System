@@ -1,8 +1,15 @@
-import React from 'react';
-import logo from '../assets/dnd-svg.svg';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../util/AuthContext.jsx';
 
 const Sidebar = () => {
+ const { logout } = useAuth();
+ const navigate = useNavigate();
+ const handleLogout = () => {
+  logout();
+  navigate('/auth/login');
+ };
+
  return (
   <aside
    className="fixed top-0 left-0 flex flex-col w-64 h-screen px-5 py-6 overflow-y-auto bg-white borderR rtl:borderR-0 rtl:border-l z-40 pt-20"
@@ -158,7 +165,6 @@ const Sidebar = () => {
        to="/deliveries"
        className="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-gray-100   hover:text-gray-700"
       >
-       {' '}
        <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -182,10 +188,7 @@ const Sidebar = () => {
        Customization
       </label>
 
-      <a
-       className="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-gray-100   hover:text-gray-700"
-       href="#"
-      >
+      <a className="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-gray-100   hover:text-gray-700 cursor-pointer">
        <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -209,8 +212,8 @@ const Sidebar = () => {
        <span className="mx-2 text-sm font-medium">Setting</span>
       </a>
       <a
-       className="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-gray-100   hover:text-gray-700"
-       href="#"
+       className="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-gray-100   hover:text-gray-700 cursor-pointer"
+       onClick={handleLogout}
       >
        <svg
         viewBox="0 0 24 24"

@@ -306,7 +306,7 @@ const AddProductsForm = () => {
           value={formData.category}
          >
           <option value="">Select Category</option>
-          <option value="Beverages">Beverages</option>
+          <option value="Beverages/Drinks">Beverages/Drinks</option>
           <option value="Bread/Bakery">Bread/Bakery</option>
           <option value="Canned/Jarred Goods">Canned/Jarred Goods</option>
           <option value="Dairy">Dairy</option>

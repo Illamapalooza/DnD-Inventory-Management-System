@@ -1,9 +1,12 @@
 import React from 'react';
-import logo from '../assets/logo.png';
+import logo from '../assets/finalLogo.png';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Validation from './LoginValidation.jsx';
 import axios from 'axios';
+// import Login from '../routes/Login.jsx';
+import { useAuth } from '../util/AuthContext.jsx';
+import createAuthHeaders from '../util/createAuthHeaders.js';
 
 const LoginForm = () => {
  const [formData, setFormData] = useState({
@@ -14,6 +17,8 @@ const LoginForm = () => {
  const [errors, setErrors] = useState({});
 
  const [loginError, setLoginError] = useState('');
+
+ const { login } = useAuth();
 
  const handleInput = (e) => {
   setFormData((prevFormData) => ({
@@ -30,9 +35,9 @@ const LoginForm = () => {
   if (errors.email === '' && errors.password === '') {
    axios
     .post('http://localhost:3000/auth/login', formData)
-    .then((res, err) => {
+    .then((res) => {
      if (res.status === 200) {
-      //   localStorage.setItem('token', res.data.token);
+      login(res.data);
       setLoginError('');
       navigate('/dashboard');
      } else {
@@ -40,8 +45,8 @@ const LoginForm = () => {
      }
     })
     .catch((err) => {
-     console.log(err.response.data);
-     setLoginError(err.response.data);
+     console.log(err.response.data.error);
+     setLoginError(err.response.data.error);
     });
   }
  };
@@ -51,7 +56,7 @@ const LoginForm = () => {
    <div className="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md">
     <div className="px-6 py-4">
      <div className="flex justify-center mx-auto">
-      <img className="w-auto h-7 sm:h-8" src={logo} alt="" />
+      <img className="w-auto h-10 sm:h-24" src={logo} alt="" />
      </div>
 
      <h3 className="mt-3 text-xl font-medium text-center text-foreground">
